@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Illustrario</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"></div>
+
+<main>
+    <h2>Palavra-tema do dia: <span th:text="${palavraTema}">Carregando...</span></h2>
+
+    <section>
+        <p>Bem-vindo ao Illustrario! Aqui você encontrará artes diárias relacionadas à palavra-tema.</p>
+    </section>
+</main>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
