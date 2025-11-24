@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Entrar - Illustrario</title>
+</head>
+<body>
+
+<h2>Entrar na sua conta</h2>
+
+<form th:action="@{/login}" method="post">
+    <label>Email:</label>
+    <input type="text" name="username" required><br>
+
+    <label>Senha:</label>
+    <input type="password" name="password" required><br>
+
+    <button type="submit">Entrar</button>
+</form>
+
+</body>
+</html>

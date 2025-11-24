@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Artes</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/upload">Enviar Arte</a>
+        <a class="nav-link" href="/profile">Perfil</a>
+    </div>
+
+    <div class="nav-right">
+        <form class="search-box" action="/search" method="get">
+            <input type="text" name="q" placeholder="Buscar artes..." th:value="${query}">
+        </form>
+    </div>
+</div>
+
+<div style="padding: 25px;">
+    <h2>Resultados para: "<span th:text="${query}"></span>"</h2>
+</div>
+
+<div class="grid">
+
+    <div class="card" th:each="art : ${results}">
+        <div class="img-box">
+            <img th:src="@{${art.imagePath}}" alt="Arte">
+        </div>
+
+        <div class="card-info">
+            <p class="title" th:text="${art.title}">Título</p>
+            <p class="author">por <span th:text="${art.author.username}">Autor</span></p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

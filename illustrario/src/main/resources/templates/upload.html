@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Novo Envio</title>
+</head>
+<body>
+
+<h2>Enviar nova arte</h2>
+
+<form th:action="@{/art/save}" th:object="${art}" method="post" enctype="multipart/form-data">
+
+    <label>Título:</label>
+    <input type="text" th:field="*{title}" required><br>
+
+    <label>Descrição:</label>
+    <textarea th:field="*{description}"></textarea><br>
+
+    <label>Arquivo da arte:</label>
+    <input type="file" name="imageFile" required><br>
+
+    <button type="submit">Enviar</button>
+</form>
+
+</body>
+</html>

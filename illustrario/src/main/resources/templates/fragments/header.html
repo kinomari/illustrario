@@ -1,7 +1,30 @@
-<header>
-    <h1>Illustrario</h1>
-    <nav>
-        <a href="/">Home</a>
-    </nav>
-    <hr>
-</header>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+
+<body>
+    <header th:fragment="navbar">
+        <nav class="navbar">
+=
+            <div class="logo">
+                <a href="/">Illustrario</a>
+            </div>
+=
+            <div class="menu">
+                <a href="/">Home</a>
+                <a href="/upload">Enviar Arte</a>
+                <a href="/profile">Perfil</a>
+            </div>
+=
+            <form class="search-box" th:action="@{/search}" method="get">
+                <input type="text" name="q" placeholder="Buscar artes..." required />
+            </form>
+=
+            <div class="logout">
+                <a href="/logout">Sair</a>
+            </div>
+
+        </nav>
+    </header>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Meu Perfil</title>
+</head>
+<body>
+
+<h2>Minhas artes</h2>
+
+<div th:each="art : ${arts}">
+    <div>
+        <a th:href="@{'/art/' + ${art.id}}">
+            <img th:src="${art.imagePath}" width="200">
+        </a>
+        <p th:text="${art.title}"></p>
+    </div>
+</div>
+
+</body>
+</html>

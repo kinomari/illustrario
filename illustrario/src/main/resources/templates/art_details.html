@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${art.title}">Arte</title>
+</head>
+<body>
+
+<h2 th:text="${art.title}"></h2>
+
+<img th:src="${art.imagePath}" width="400">
+
+<p><strong>Tema do dia:</strong> <span th:text="${art.themeOfDay}"></span></p>
+<p><strong>Descrição:</strong></p>
+<p th:text="${art.description}"></p>
+
+<hr>
+
+<form th:action="@{'/like/' + ${art.id}}" method="post">
+    <button type="submit">Curtir ❤️</button>
+</form>
+
+<p>Total de curtidas: <span th:text="${likes}"></span></p>
+
+<hr>
+
+<h3>Comentários</h3>
+
+<div th:each="c : ${comments}">
+    <p><strong th:text="${c.author.name}"></strong>:</p>
+    <p th:text="${c.text}"></p>
+    <small th:text="${c.createdAt}"></small>
+    <hr>
+</div>
+
+<form th:action="@{'/comment/add/' + ${art.id}}" method="post">
+
+    <textarea name="text" required></textarea><br>
+
+    <button type="submit">Enviar comentário</button>
+</form>
+
+<a href="/">Voltar</a>
+
+</body>
+</html>
