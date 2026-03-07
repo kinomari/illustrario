@@ -1,21 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
 <head>
     <title>Entrar - Illustrario</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<h2>Entrar na sua conta</h2>
+<div th:replace="~{fragments/header :: header}"></div>
 
-<form th:action="@{/login}" method="post">
-    <label>Email:</label>
-    <input type="text" name="username" required><br>
+<main style="max-width: 400px; margin: 3rem auto; padding: 0 1rem;">
+    <h2>Entrar na sua conta</h2>
 
-    <label>Senha:</label>
-    <input type="password" name="password" required><br>
+    <div th:if="${param.error}" style="color: red; margin-bottom: 1rem;">
+        E-mail ou senha incorretos.
+    </div>
 
-    <button type="submit">Entrar</button>
-</form>
+    <div th:if="${success}" style="color: green; margin-bottom: 1rem;"
+         th:text="${success}"></div>
+
+    <form th:action="@{/login}" method="post">
+
+        <div style="margin-bottom: 1rem;">
+            <label>Email:</label><br>
+            <input type="email" name="username" required>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+            <label>Senha:</label><br>
+            <input type="password" name="password" required>
+        </div>
+
+        <button type="submit">Entrar</button>
+        <p>Não tem conta? <a th:href="@{/register}">Cadastre-se</a></p>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

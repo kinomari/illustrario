@@ -1,45 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Buscar Artes</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Busca: ' + ${query} + ' | Illustrario'">Buscar Artes</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-
 <body>
 
-<div class="navbar">
-    <div class="nav-left">
-        <a class="nav-link" href="/">Home</a>
-        <a class="nav-link" href="/upload">Enviar Arte</a>
-        <a class="nav-link" href="/profile">Perfil</a>
-    </div>
+    <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="nav-right">
-        <form class="search-box" action="/search" method="get">
-            <input type="text" name="q" placeholder="Buscar artes..." th:value="${query}">
-        </form>
-    </div>
-</div>
+    <main style="max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem;">
 
-<div style="padding: 25px;">
-    <h2>Resultados para: "<span th:text="${query}"></span>"</h2>
-</div>
+        <h2>Resultados para: "<span th:text="${query}"></span>"</h2>
 
-<div class="grid">
-
-    <div class="card" th:each="art : ${results}">
-        <div class="img-box">
-            <img th:src="@{${art.imagePath}}" alt="Arte">
+        <div th:if="${#lists.isEmpty(results)}" class="empty-state">
+            <p>Nenhuma arte encontrada para "<strong th:text="${query}"></strong>". Tente outro termo.</p>
         </div>
 
-        <div class="card-info">
-            <p class="title" th:text="${art.title}">Título</p>
-            <p class="author">por <span th:text="${art.author.username}">Autor</span></p>
+        <div class="artwork-grid" th:unless="${#lists.isEmpty(results)}">
+            <article class="artwork-card"
+                     th:each="artwork : ${results}"
+                     th:unless="${artwork.removed}">
+                <div class="artwork-image-wrapper">
+                    <img th:src="${artwork.filePath}"   th:alt="${artwork.title}"
+                         class="artwork-image" loading="lazy"/>
+                </div>
+                <div class="artwork-info">
+                    <h3 th:text="${artwork.title}">Título</h3>
+                    <p class="artwork-artist"
+                       th:if="${artwork.artistName}"
+                       th:text="'por ' + ${artwork.artistName}">por Artista</p>
+                    <p class="artwork-desc"
+                       th:if="${artwork.description}"
+                       th:text="${artwork.description}">Descrição</p>
+                    <time class="artwork-date"
+                          th:text="${#temporals.format(artwork.uploadedAt, 'dd/MM/yyyy')}">
+                    </time>
+                </div>
+            </article>
         </div>
-    </div>
 
-</div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

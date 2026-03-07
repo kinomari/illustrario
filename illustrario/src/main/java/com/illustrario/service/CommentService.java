@@ -1,28 +1,38 @@
 package com.illustrario.service;
 
-import com.illustrario.model.*;
+import com.illustrario.model.Artwork;
+import com.illustrario.model.Comment;
+import com.illustrario.repository.ArtworkRepository;
 import com.illustrario.repository.CommentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
 public class CommentService {
 
-    @Autowired
-    private CommentRepository repo;
+    private final CommentRepository commentRepository;
+    private final ArtworkRepository artworkRepository;
 
-    public Comment addComment(String text, Art art, User user) {
-        Comment c = new Comment();
-        c.setText(text);
-        c.setArt(art);
-        c.setAuthor(user);
-        c.setCreatedAt(LocalDateTime.now());
-        return repo.save(c);
+    public CommentService(CommentRepository commentRepository,
+                          ArtworkRepository artworkRepository) {
+        this.commentRepository = commentRepository;
+        this.artworkRepository = artworkRepository;
     }
 
-    public List<Comment> getCommentsForArt(Art art) {
-        return repo.findByArtOrderByCreatedAtAsc(art);
+    @Transactional
+    public Comment addComment(Long artworkId, String authorName, String content) {
+        Artwork artwork = artworkRepository.findById(artworkId)
+            .orElseThrow(() -> new IllegalArgumentException("Obra não encontrada"));
+
+        return commentRepository.save(new Comment(artwork, authorName, content));
+    }
+
+    public List<Comment> getComments(Long artworkId) {
+        Artwork artwork = artworkRepository.findById(artworkId)
+            .orElseThrow(() -> new IllegalArgumentException("Obra não encontrada"));
+
+        return commentRepository.findByArtworkOrderByCreatedAtDesc(artwork);
     }
 }

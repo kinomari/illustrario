@@ -1,6 +1,6 @@
 package com.illustrario.controller;
 
-import com.illustrario.repository.ArtRepository;
+import com.illustrario.repository.ArtworkRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class SearchController {
 
-    private final ArtRepository artRepository;
+    private final ArtworkRepository artRepository;
 
-    public SearchController(ArtRepository artRepository) {
+    public SearchController(ArtworkRepository artRepository) {
         this.artRepository = artRepository;
     }
 

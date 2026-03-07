@@ -1,185 +1,59 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <title>Illustrario – Galeria</title>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f8f8f8;
-        }
-
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 20;
-            background: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 10px 20px;
-        }
-
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-
-        .logo a {
-            text-decoration: none;
-            color: #222;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .menu {
-            display: flex;
-            gap: 20px;
-        }
-
-        .menu a {
-            text-decoration: none;
-            color: #333;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .menu a:hover {
-            color: #000;
-        }
-
-        .search-box input {
-            padding: 7px 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            width: 180px;
-        }
-
-        .logout a {
-            text-decoration: none;
-            color: #d33;
-            font-weight: bold;
-        }
-
-        .logout a:hover {
-            color: #a00;
-        }
-
-        .theme-box {
-            padding: 15px 25px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .grid {
-            columns: 300px;
-            column-gap: 18px;
-            padding: 20px;
-        }
-
-        .card {
-            display: inline-block;
-            margin-bottom: 18px;
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            transition: transform 0.15s;
-            width: 100%;
-        }
-
-        .card:hover {
-            transform: scale(1.02);
-        }
-
-        .img-box img {
-            width: 100%;
-            display: block;
-        }
-
-        .card-info {
-            padding: 12px 15px;
-        }
-
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 0 0 5px 0;
-        }
-
-        .author {
-            font-size: 14px;
-            color: #555;
-        }
-
-        .date {
-            font-size: 12px;
-            color: #777;
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                justify-content: center;
-                text-align: center;
-            }
-
-            .menu {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .search-box input {
-                width: 90%;
-            }
-
-            .theme-box {
-                text-align: center;
-            }
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Illustrario — Galeria de arte com tema diário</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-
 <body>
 
-    <div th:replace="~{fragments/header :: navbar}"></div>
+    <div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="theme-box">
-        Tema de hoje:
-        <span th:text="${theme}">—</span>
-    </div>
+    <main class="gallery-page">
+        
+        <section class="theme-banner">
+            <p class="theme-label">Tema de hoje</p>
+            <h1 class="theme-word" th:text="${theme.word}">floresta</h1>
+            <p class="theme-hint" th:text="${theme.hint}">Inspire-se na natureza...</p>
+            <a th:href="@{/gallery}" class="btn-submit" style="display:inline-block; margin-top:1rem; text-decoration:none;">
+                🎨 Ver galeria e enviar arte
+            </a>
+        </section>
 
-    <main>
-        <div class="grid">
+        <section class="gallery-section">
+            <h2>Obras recentes</h2>
 
-            <div class="card" th:each="art : ${recentArts}">
-                <div class="img-box">
-                    <img th:src="@{${art.imagePath}}" alt="Imagem da arte" />
-                </div>
-
-                <div class="card-info">
-                    <p class="title" th:text="${art.title}">Título</p>
-
-                    <p class="author">
-                        por <span th:text="${art.author.username}">Autor</span>
-                    </p>
-
-                    <p class="date"
-                        th:text="${#temporals.format(art.createdAt, 'dd/MM/yyyy HH:mm')}">
-                        Data
-                    </p>
-                </div>
+            <div th:if="${#lists.isEmpty(recentArtworks)}" class="empty-state">
+                <p>Nenhuma obra enviada ainda. Seja o(a) primeiro(a)! 🎨</p>
             </div>
 
-        </div>
+            <div class="artwork-grid" th:unless="${#lists.isEmpty(recentArtworks)}">
+                <article class="artwork-card"
+                         th:each="artwork : ${recentArtworks}"
+                         th:unless="${artwork.removed}">
+                    <div class="artwork-image-wrapper">
+                        <img th:src="${artwork.filePath}"
+                             th:alt="${artwork.title}"
+                             class="artwork-image"
+                             loading="lazy"/>
+                    </div>
+                    <div class="artwork-info">
+                        <h3 th:text="${artwork.title}">Título</h3>
+                        <p class="artwork-artist"
+                           th:if="${artwork.artistName}"
+                           th:text="'por ' + ${artwork.artistName}">por Artista</p>
+                        <time class="artwork-date"
+                              th:text="${#temporals.format(artwork.uploadedAt, 'dd/MM/yyyy HH:mm')}">
+                        </time>
+                    </div>
+                </article>
+            </div>
+        </section>
+
     </main>
 
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
 </body>
-
-<div th:replace="~{fragments/footer :: footer}"></div>
-
 </html>

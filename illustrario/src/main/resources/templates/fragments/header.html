@@ -1,30 +1,43 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
-
 <body>
-    <header th:fragment="navbar">
-        <nav class="navbar">
-=
-            <div class="logo">
-                <a href="/">Illustrario</a>
-            </div>
-=
-            <div class="menu">
-                <a href="/">Home</a>
-                <a href="/upload">Enviar Arte</a>
-                <a href="/profile">Perfil</a>
-            </div>
-=
-            <form class="search-box" th:action="@{/search}" method="get">
-                <input type="text" name="q" placeholder="Buscar artes..." required />
-            </form>
-=
-            <div class="logout">
-                <a href="/logout">Sair</a>
-            </div>
 
-        </nav>
-    </header>
+<header th:fragment="header">
+    <nav class="navbar">
+
+        <div class="logo">
+            <a href="/">Illustrario</a>
+        </div>
+
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="/gallery">Galeria</a>
+            <a href="/upload">Enviar Arte</a>
+
+            <a href="/profile" sec:authorize="isAuthenticated()">Perfil</a>
+        </div>
+
+        <form class="search-box" th:action="@{/search}" method="get">
+            <input type="text" name="q" placeholder="Buscar artes..." />
+        </form>
+
+        <div class="auth-links">
+
+            <span sec:authorize="!isAuthenticated()">
+                <a href="/login">Entrar</a>
+                <a href="/register">Cadastrar</a>
+            </span>
+
+            <span sec:authorize="isAuthenticated()">
+                <span sec:authentication="name"></span>
+                <a href="/logout">Sair</a>
+            </span>
+        </div>
+
+    </nav>
+</header>
+
 </body>
 </html>

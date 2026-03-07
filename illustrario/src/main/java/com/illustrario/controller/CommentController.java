@@ -1,37 +1,35 @@
 package com.illustrario.controller;
 
-import com.illustrario.model.Art;
-import com.illustrario.model.User;
-import com.illustrario.service.*;
-import org.springframework.security.core.Authentication;
+import com.illustrario.model.Comment;
+import com.illustrario.service.CommentService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
+@RequestMapping("/comments")
 public class CommentController {
 
     private final CommentService commentService;
 
-    private final ArtService artService;
-
-    private final UserService userService;
-
-    public CommentController(CommentService commentService, ArtService artService, UserService userService) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
-        this.artService = artService;
-        this.userService = userService;
     }
 
-    @PostMapping("/comment/add/{artId}")
-    public String addComment(@PathVariable Long artId,
-                             @RequestParam String text,
-                             Authentication auth) {
+    @PostMapping("/{artworkId}")
+    public String addComment(@PathVariable Long artworkId,
+                             @RequestParam String authorName,
+                             @RequestParam String content,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            commentService.addComment(artworkId, authorName, content);
+            redirectAttributes.addFlashAttribute("successMessage", "Comentário adicionado!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao comentar: " + e.getMessage());
+        }
 
-        Art art = artService.getArtById(artId);
-        User user = userService.findByEmail(auth.getName());
-
-        commentService.addComment(text, art, user);
-
-        return "redirect:/art/" + artId;
+        return "redirect:/gallery/artwork/" + artworkId;
     }
 }

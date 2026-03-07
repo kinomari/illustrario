@@ -13,49 +13,53 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/upload")
-public class UploadController {
+@RequestMapping("/gallery")
+public class GalleryController {
 
     private final ArtworkService artworkService;
     private final DailyThemeService dailyThemeService;
 
-    public UploadController(ArtworkService artworkService,
-                            DailyThemeService dailyThemeService) {
+    public GalleryController(ArtworkService artworkService,
+                              DailyThemeService dailyThemeService) {
         this.artworkService = artworkService;
         this.dailyThemeService = dailyThemeService;
     }
 
     @GetMapping
-    public String uploadForm(Model model) {
-        model.addAttribute("theme", dailyThemeService.getTodayTheme());
+    public String gallery(Model model) {
+        var todayTheme = dailyThemeService.getTodayTheme();
+        model.addAttribute("theme", todayTheme);
+        model.addAttribute("artworks", artworkService.getArtworksByTheme(todayTheme.getWord()));
         model.addAttribute("uploadDto", new ArtworkUploadDto());
-        return "upload/form";
+        return "gallery/index";
     }
 
-    @PostMapping
-    public String processUpload(@Valid @ModelAttribute("uploadDto") ArtworkUploadDto dto,
-                                BindingResult bindingResult,
-                                RedirectAttributes redirectAttributes,
-                                Model model) {
+    @PostMapping("/upload")
+    public String upload(@Valid @ModelAttribute("uploadDto") ArtworkUploadDto dto,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
+                         Model model) {
 
         var todayTheme = dailyThemeService.getTodayTheme();
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("theme", todayTheme);
-            return "upload/form";
+            model.addAttribute("artworks", artworkService.getArtworksByTheme(todayTheme.getWord()));
+            return "gallery/index";
         }
 
         try {
             artworkService.upload(dto, todayTheme.getWord());
-            redirectAttributes.addFlashAttribute("successMessage", "Arte enviada com sucesso! 🎨");
-            return "redirect:/gallery";
+            redirectAttributes.addFlashAttribute("successMessage",
+                "Arte enviada com sucesso! 🎨");
         } catch (IllegalArgumentException e) {
+
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("errorMessage",
                 "Erro ao salvar a imagem. Tente novamente.");
         }
 
-        return "redirect:/upload";
+        return "redirect:/gallery";
     }
 }

@@ -1,74 +1,53 @@
 package com.illustrario.controller;
 
-import com.illustrario.model.Art;
-import com.illustrario.model.User;
-import com.illustrario.service.ArtService;
-import com.illustrario.service.UserService;
+import com.illustrario.model.Artwork;
+import com.illustrario.service.ArtworkService;
 import com.illustrario.service.CommentService;
 import com.illustrario.service.LikeService;
-import org.springframework.security.core.Authentication;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
+@RequestMapping("/gallery/artwork")
 public class ArtController {
 
-    private final ArtService artService;
-
-    private final UserService userService;
-
+    private final ArtworkService artworkService;
     private final CommentService commentService;
-
     private final LikeService likeService;
 
-    public ArtController(ArtService artService, UserService userService, CommentService commentService, LikeService likeService) {
-        this.artService = artService;
-        this.userService = userService;
+    public ArtController(ArtworkService artworkService,
+                         CommentService commentService,
+                         LikeService likeService) {
+        this.artworkService = artworkService;
         this.commentService = commentService;
         this.likeService = likeService;
     }
 
-    @GetMapping("/arts")
-    public String home(Model model) {
-        model.addAttribute("arts", artService.getRecentArts());
-        return "index";
+    @GetMapping("/{id}")
+    public String artworkDetail(@PathVariable Long id,
+                                HttpServletRequest request,
+                                Model model) {
+
+        Artwork artwork = artworkService.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Obra não encontrada: " + id));
+
+        String visitorIp = getClientIp(request);
+
+        model.addAttribute("artwork", artwork);
+        model.addAttribute("comments", commentService.getComments(id));
+        model.addAttribute("likeCount", likeService.countLikes(id));
+        model.addAttribute("hasLiked", likeService.hasLiked(id, visitorIp));
+
+        return "gallery/artwork-detail";
     }
 
-    @GetMapping("/art/new")
-    public String newArt(Model model) {
-        model.addAttribute("art", new Art());
-        return "art_form";
-    }
-
-    @PostMapping("/art/save")
-    public String saveArt(@ModelAttribute Art art,
-                          @RequestParam("imageFile") MultipartFile imageFile,
-                          Authentication auth) throws Exception {
-
-        User user = userService.findByEmail(auth.getName());
-        artService.saveArt(art, imageFile, user);
-
-        return "redirect:/";
-    }
-
-    @GetMapping("/art/{id}")
-    public String artDetails(@PathVariable Long id, Model model) {
-    Art art = artService.getArtById(id);
-
-    model.addAttribute("art", art);
-    model.addAttribute("comments", commentService.getCommentsForArt(art));
-    model.addAttribute("likes", likeService.countLikes(art));
-
-    return "art_details";
-}
-
-
-    @GetMapping("/profile")
-    public String profile(Model model, Authentication auth) {
-        User user = userService.findByEmail(auth.getName());
-        model.addAttribute("arts", artService.getArtsByUser(user));
-        return "profile";
+    private String getClientIp(HttpServletRequest request) {
+        String forwarded = request.getHeader("X-Forwarded-For");
+        if (forwarded != null && !forwarded.isBlank()) {
+            return forwarded.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

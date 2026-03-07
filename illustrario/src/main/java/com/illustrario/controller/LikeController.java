@@ -1,35 +1,51 @@
 package com.illustrario.controller;
 
-import com.illustrario.model.Art;
-import com.illustrario.model.User;
-import com.illustrario.service.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
+import com.illustrario.service.LikeService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/likes")
 public class LikeController {
 
     private final LikeService likeService;
 
-    private final ArtService artService;
-
-    private final UserService userService;
-
-    public LikeController(LikeService likeService, ArtService artService, UserService userService) {
+    public LikeController(LikeService likeService) {
         this.likeService = likeService;
-        this.artService = artService;
-        this.userService = userService;
     }
 
-    @PostMapping("/like/{artId}")
-    public String like(@PathVariable Long artId, Authentication auth) {
+    @PostMapping("/{artworkId}")
+    public ResponseEntity<Map<String, Object>> toggleLike(
+            @PathVariable Long artworkId,
+            HttpServletRequest request) {
 
-        Art art = artService.getArtById(artId);
-        User user = userService.findByEmail(auth.getName());
+        String ip = getClientIp(request);
+        boolean liked = likeService.toggleLike(artworkId, ip);
+        long count = likeService.countLikes(artworkId);
 
-        likeService.toggleLike(art, user);
+        return ResponseEntity.ok(Map.of("liked", liked, "count", count));
+    }
 
-        return "redirect:/art/" + artId;
+    @GetMapping("/{artworkId}")
+    public ResponseEntity<Map<String, Object>> getLikes(
+            @PathVariable Long artworkId,
+            HttpServletRequest request) {
+
+        String ip = getClientIp(request);
+        long count = likeService.countLikes(artworkId);
+        boolean hasLiked = likeService.hasLiked(artworkId, ip);
+
+        return ResponseEntity.ok(Map.of("count", count, "hasLiked", hasLiked));
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String forwarded = request.getHeader("X-Forwarded-For");
+        if (forwarded != null && !forwarded.isBlank()) {
+            return forwarded.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

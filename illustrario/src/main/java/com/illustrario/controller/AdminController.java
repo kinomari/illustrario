@@ -6,17 +6,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.illustrario.repository.ArtRepository;
+import com.illustrario.repository.ArtworkRepository;
 import com.illustrario.repository.CommentRepository;
 
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('CURATOR')")
 public class AdminController {
-  private final ArtRepository artRepo;
+  private final ArtworkRepository artRepo;
   private final CommentRepository commentRepo;
 
-  public AdminController(ArtRepository artRepo, CommentRepository commentRepo) {
+  public AdminController(ArtworkRepository artRepo, CommentRepository commentRepo) {
     this.artRepo = artRepo;
     this.commentRepo = commentRepo;
   }

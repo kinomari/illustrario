@@ -1,32 +1,47 @@
 package com.illustrario.service;
 
-import com.illustrario.model.*;
+import com.illustrario.model.Artwork;
+import com.illustrario.model.Like;
+import com.illustrario.repository.ArtworkRepository;
 import com.illustrario.repository.LikeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LikeService {
 
-    @Autowired
-    private LikeRepository repo;
+    private final LikeRepository likeRepository;
+    private final ArtworkRepository artworkRepository;
 
-    public boolean toggleLike(Art art, User user) {
+    public LikeService(LikeRepository likeRepository,
+                       ArtworkRepository artworkRepository) {
+        this.likeRepository = likeRepository;
+        this.artworkRepository = artworkRepository;
+    }
 
-        var existing = repo.findByUserAndArt(user, art);
+    @Transactional
+    public boolean toggleLike(Long artworkId, String visitorIp) {
+        Artwork artwork = artworkRepository.findById(artworkId)
+            .orElseThrow(() -> new IllegalArgumentException("Obra não encontrada"));
 
-        if (existing.isPresent()) {
-
-            repo.delete(existing.get());
+        if (likeRepository.existsByArtworkAndVisitorIp(artwork, visitorIp)) {
+            likeRepository.deleteByArtworkAndVisitorIp(artwork, visitorIp);
             return false;
         } else {
-            
-            repo.save(new Like(art, user));
+            likeRepository.save(new Like(artwork, visitorIp));
             return true;
         }
     }
 
-    public int countLikes(Art art) {
-        return repo.countByArt(art);
+    public long countLikes(Long artworkId) {
+        Artwork artwork = artworkRepository.findById(artworkId)
+            .orElseThrow(() -> new IllegalArgumentException("Obra não encontrada"));
+        return likeRepository.countByArtwork(artwork);
+    }
+
+    public boolean hasLiked(Long artworkId, String visitorIp) {
+        return artworkRepository.findById(artworkId)
+            .map(artwork -> likeRepository.existsByArtworkAndVisitorIp(artwork, visitorIp))
+            .orElse(false);
     }
 }

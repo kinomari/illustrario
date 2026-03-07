@@ -1,14 +1,16 @@
 package com.illustrario.repository;
 
+import com.illustrario.model.Artwork;
 import com.illustrario.model.Like;
-import com.illustrario.model.Art;
-import com.illustrario.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
 
-    Optional<Like> findByUserAndArt(User user, Art art);
+    long countByArtwork(Artwork artwork);
 
-    int countByArt(Art art);
+    boolean existsByArtworkAndVisitorIp(Artwork artwork, String visitorIp);
+
+    void deleteByArtworkAndVisitorIp(Artwork artwork, String visitorIp);
 }

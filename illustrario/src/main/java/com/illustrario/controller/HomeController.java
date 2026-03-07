@@ -1,26 +1,31 @@
 package com.illustrario.controller;
 
+import com.illustrario.model.DailyTheme;
+import com.illustrario.service.ArtworkService;
+import com.illustrario.service.DailyThemeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.illustrario.repository.ArtRepository;
-import com.illustrario.service.ThemeService;
-
 @Controller
 public class HomeController {
-  private final ThemeService themeService;
-  private final ArtRepository artRepository;
-  public HomeController(ThemeService themeService, ArtRepository artRepository) {
-    this.themeService = themeService; this.artRepository = artRepository;
-  }
 
-  @GetMapping("/")
-  public String index(Model m) {
-    var theme = themeService.getTodayTheme();
-    if (theme == null) themeService.generateDailyTheme(); // garante
-    m.addAttribute("theme", themeService.getTodayTheme());
-    m.addAttribute("recentArts", artRepository.findTop20ByOrderByCreatedAtDesc());
-    return "index";
-  }
+    private final DailyThemeService dailyThemeService;
+    private final ArtworkService artworkService;
+
+    public HomeController(DailyThemeService dailyThemeService,
+                          ArtworkService artworkService) {
+        this.dailyThemeService = dailyThemeService;
+        this.artworkService = artworkService;
+    }
+
+    @GetMapping("/")
+    public String index(Model model) {
+        DailyTheme todayTheme = dailyThemeService.getTodayTheme();
+
+        model.addAttribute("theme", todayTheme);
+        model.addAttribute("recentArtworks", artworkService.getRecentArtworks());
+
+        return "index";
+    }
 }
