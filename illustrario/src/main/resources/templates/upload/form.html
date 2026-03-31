@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enviar Arte - Illustrario</title>
+    <title>Enviar Arte | Illustrario</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-
     <div th:replace="~{fragments/header :: header}"></div>
 
     <main style="max-width: 700px; margin: 2rem auto; padding: 0 1rem;">
 
-        <section class="theme-banner" style="border-radius: 12px; margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
             <p class="theme-label">Tema de hoje</p>
-            <h1 class="theme-word" th:text="${theme.word}">floresta</h1>
-            <p class="theme-hint" th:text="${theme.hint}">Inspire-se...</p>
-        </section>
+            <h2 style="margin:0; color:var(--vinho); font-size:2rem;" th:text="${theme.word}">tema</h2>
+            <p style="color:var(--subtext); font-style:italic;" th:text="${theme.hint}"></p>
+        </div>
 
         <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
         <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
@@ -24,26 +23,15 @@
         <section class="upload-section">
             <h2>Envie sua arte</h2>
 
-            <form th:action="@{/upload}"
-                  th:object="${uploadDto}"
-                  method="post"
-                  enctype="multipart/form-data"
-                  class="upload-form">
+            <form th:action="@{/upload}" th:object="${uploadDto}"
+                  method="post" enctype="multipart/form-data" class="upload-form">
 
                 <div class="form-group">
                     <label for="title">Título *</label>
                     <input type="text" id="title" th:field="*{title}"
-                           placeholder="Dê um nome para sua obra"
-                           class="form-input"/>
+                           placeholder="Dê um nome para sua obra" class="form-input"/>
                     <span th:if="${#fields.hasErrors('title')}"
                           th:errors="*{title}" class="field-error"></span>
-                </div>
-
-                <div class="form-group">
-                    <label for="artistName">Seu nome</label>
-                    <input type="text" id="artistName" th:field="*{artistName}"
-                           placeholder="Como você quer ser chamado(a)?"
-                           class="form-input"/>
                 </div>
 
                 <div class="form-group">
@@ -57,7 +45,7 @@
                     <label for="imageFile">Imagem * (JPG, PNG — máx. 5MB)</label>
                     <input type="file" id="imageFile" name="imageFile"
                            accept="image/jpeg,image/png"
-                           class="form-input file-input" required/>
+                           class="form-input" required/>
                     <img id="imagePreview" class="image-preview hidden" alt="Preview"/>
                 </div>
 
@@ -74,10 +62,7 @@
             if (!file) return;
             const preview = document.getElementById('imagePreview');
             const reader = new FileReader();
-            reader.onload = (event) => {
-                preview.src = event.target.result;
-                preview.classList.remove('hidden');
-            };
+            reader.onload = e => { preview.src = e.target.result; preview.classList.remove('hidden'); };
             reader.readAsDataURL(file);
         });
     </script>

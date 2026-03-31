@@ -3,41 +3,41 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-
 <header th:fragment="header">
     <nav class="navbar">
-
         <div class="logo">
-            <a href="/">Illustrario</a>
+            <a href="/"><img src="/images/logo.png" alt="Illustrario" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'"><span style="display:none">Illustrario</span></a>
         </div>
-
         <div class="menu">
-            <a href="/">Home</a>
-            <a href="/gallery">Galeria</a>
-            <a href="/upload">Enviar Arte</a>
-
-            <a href="/profile" sec:authorize="isAuthenticated()">Perfil</a>
+            <a class="nav-link" href="/">Início</a>
+            <a class="nav-link" href="/explorar">Explorar</a>
+            <a class="nav-link" href="/sobre">Sobre</a>
+            <a class="nav-link" href="/upload" sec:authorize="isAuthenticated()">Enviar Arte</a>
+            <a class="nav-link" href="/profile" sec:authorize="isAuthenticated()">Perfil</a>
         </div>
-
         <form class="search-box" th:action="@{/search}" method="get">
-            <input type="text" name="q" placeholder="Buscar artes..." />
+            <input type="text" name="q" placeholder="Buscar artes..."/>
         </form>
-
-        <div class="auth-links">
-
+        <div class="nav-right">
             <span sec:authorize="!isAuthenticated()">
-                <a href="/login">Entrar</a>
-                <a href="/register">Cadastrar</a>
+                <a class="nav-link" href="/login">Entrar</a>
+                <a class="nav-link" href="/register">Cadastrar</a>
             </span>
-
-            <span sec:authorize="isAuthenticated()">
-                <span sec:authentication="name"></span>
-                <a href="/logout">Sair</a>
+            <span sec:authorize="isAuthenticated()" style="display:flex; align-items:center; gap:12px;">
+                <a class="nav-link" href="/profile"
+                   th:text="${currentNickname != null ? currentNickname : #authentication.name}">
+                    Perfil
+                </a>
+                <form th:action="@{/logout}" method="post" style="margin:0;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" style="background:none; border:none; cursor:pointer;
+                            color:var(--bege); font-weight:600; font-size:1rem; padding:0;">
+                        Sair
+                    </button>
+                </form>
             </span>
         </div>
-
     </nav>
 </header>
-
 </body>
 </html>

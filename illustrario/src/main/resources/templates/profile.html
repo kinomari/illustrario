@@ -1,20 +1,133 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
 <head>
-    <title>Meu Perfil</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil | Illustrario</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 2rem;
+        }
+        .avatar-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+        .avatar-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e8c4a0;
+        }
+        .avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #1a1a2e;
+            color: #e8c4a0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            border: 3px solid #e8c4a0;
+        }
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #e8c4a0;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
+    <div th:replace="~{fragments/header :: header}"></div>
 
-<h2>Minhas artes</h2>
+    <main style="max-width: 1000px; margin: 2rem auto; padding: 0 1.5rem;">
 
-<div th:each="art : ${arts}">
-    <div>
-        <a th:href="@{'/art/' + ${art.id}}">
-            <img th:src="${art.imagePath}" width="200">
-        </a>
-        <p th:text="${art.title}"></p>
-    </div>
-</div>
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
 
+        <div class="profile-header">
+
+            <form th:action="@{/profile/avatar}" method="post"
+                  enctype="multipart/form-data" id="avatarForm">
+                <div class="avatar-wrapper">
+
+                    <img th:if="${user.avatarPath}"
+                         th:src="${user.avatarPath}"
+                         th:alt="${user.nickname}"
+                         class="avatar-img"/>
+
+                    <div th:unless="${user.avatarPath}" class="avatar-placeholder">
+                        <span th:text="${#strings.toUpperCase(#strings.substring(user.nickname, 0, 1))}">A</span>
+                    </div>
+
+                    <button type="button" class="avatar-upload-btn"
+                            onclick="document.getElementById('avatarFile').click()"
+                            title="Trocar avatar">✏️</button>
+                </div>
+                <input type="file" id="avatarFile" name="avatarFile"
+                       accept="image/jpeg,image/png,image/webp"
+                       style="display:none"
+                       onchange="document.getElementById('avatarForm').submit()"/>
+            </form>
+
+            <div>
+                <h2 style="margin: 0 0 0.3rem;" th:text="${user.nickname}">Apelido</h2>
+                <p style="color: #888; margin: 0;" th:text="${user.email}">email</p>
+                <p style="color: #aaa; font-size: 0.85rem; margin-top: 0.3rem;">
+                    <span th:text="${#lists.size(artworks)}">0</span> obra(s) enviada(s)
+                </p>
+            </div>
+        </div>
+
+        <h3>Minhas obras</h3>
+
+        <div th:if="${#lists.isEmpty(artworks)}" class="empty-state">
+            <p>Você ainda não enviou nenhuma obra.
+               <a th:href="@{/upload}">Envie a primeira!</a></p>
+        </div>
+
+        <div class="artwork-grid" th:unless="${#lists.isEmpty(artworks)}">
+            <article class="artwork-card" th:each="artwork : ${artworks}">
+                <a th:href="@{'/gallery/artwork/' + ${artwork.id}}"
+                   style="text-decoration: none; color: inherit;">
+                    <div class="artwork-image-wrapper">
+                        <img th:src="${artwork.filePath}"
+                             th:alt="${artwork.title}"
+                             class="artwork-image" loading="lazy"/>
+                    </div>
+                    <div class="artwork-info">
+                        <h3 th:text="${artwork.title}">Título</h3>
+                        <p style="color: #aaa; font-size: 0.78rem; margin: 0;">
+                            Tema: <span th:text="${artwork.theme}"></span> ·
+                            <time th:text="${#temporals.format(artwork.uploadedAt, 'dd/MM/yyyy')}"></time>
+                        </p>
+                    </div>
+                </a>
+            </article>
+        </div>
+
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
