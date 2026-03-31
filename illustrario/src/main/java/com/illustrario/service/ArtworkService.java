@@ -2,39 +2,55 @@ package com.illustrario.service;
 
 import com.illustrario.dto.ArtworkUploadDto;
 import com.illustrario.model.Artwork;
+import com.illustrario.model.User;
 import com.illustrario.repository.ArtworkRepository;
+import com.illustrario.repository.UserRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ArtworkService {
 
     private final ArtworkRepository artworkRepository;
     private final ImageStorageService imageStorageService;
+    private final UserRepository userRepository;
 
     public ArtworkService(ArtworkRepository artworkRepository,
-                          ImageStorageService imageStorageService) {
+                          ImageStorageService imageStorageService,
+                          UserRepository userRepository) {
         this.artworkRepository = artworkRepository;
         this.imageStorageService = imageStorageService;
+        this.userRepository = userRepository;
     }
 
+    /**
+     * Salva a obra vinculada ao usuário logado.
+     * @param userEmail e-mail do usuário autenticado (vindo do SecurityContext)
+     */
     @Transactional
-    public Artwork upload(ArtworkUploadDto dto, String currentTheme) throws IOException {
-
+    public Artwork upload(ArtworkUploadDto dto, String currentTheme,
+                          String userEmail) throws IOException {
         String filePath = imageStorageService.save(dto.getImageFile());
         String fileName = dto.getImageFile().getOriginalFilename();
 
+        // Usa o apelido do usuário como nome do artista automaticamente
+        User user = userRepository.findByEmail(userEmail)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+
         Artwork artwork = new Artwork(
             dto.getTitle(),
-            dto.getArtistName(),
+            user.getNickname(),   // artistName = apelido do usuário logado
             fileName,
             filePath,
             currentTheme,
             dto.getDescription()
         );
+        artwork.setUser(user);
 
         return artworkRepository.save(artwork);
     }
@@ -47,7 +63,11 @@ public class ArtworkService {
         return artworkRepository.findByThemeOrderByUploadedAtDesc(theme);
     }
 
-    public java.util.Optional<Artwork> findById(Long id) {
+    public List<Artwork> getArtworksByUser(User user) {
+        return artworkRepository.findByUserOrderByUploadedAtDesc(user);
+    }
+
+    public Optional<Artwork> findById(Long id) {
         return artworkRepository.findById(id);
     }
 

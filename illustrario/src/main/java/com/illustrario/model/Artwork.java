@@ -37,10 +37,13 @@ public class Artwork {
     @Column(nullable = false)
     private boolean removed = false;
 
+    // Vínculo com o usuário que enviou a obra
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @PrePersist
-    protected void onCreate() {
-        this.uploadedAt = LocalDateTime.now();
-    }
+    protected void onCreate() { this.uploadedAt = LocalDateTime.now(); }
 
     public Artwork() {}
 
@@ -55,27 +58,21 @@ public class Artwork {
     }
 
     public Long getId() { return id; }
-
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
-
     public String getArtistName() { return artistName; }
     public void setArtistName(String artistName) { this.artistName = artistName; }
-
     public String getFileName() { return fileName; }
     public void setFileName(String fileName) { this.fileName = fileName; }
-
     public String getFilePath() { return filePath; }
     public void setFilePath(String filePath) { this.filePath = filePath; }
-
     public String getTheme() { return theme; }
     public void setTheme(String theme) { this.theme = theme; }
-
     public LocalDateTime getUploadedAt() { return uploadedAt; }
-
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-
     public boolean isRemoved() { return removed; }
     public void setRemoved(boolean removed) { this.removed = removed; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }

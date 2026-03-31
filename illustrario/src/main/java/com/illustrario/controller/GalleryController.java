@@ -4,6 +4,8 @@ import com.illustrario.dto.ArtworkUploadDto;
 import com.illustrario.service.ArtworkService;
 import com.illustrario.service.DailyThemeService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +22,7 @@ public class GalleryController {
     private final DailyThemeService dailyThemeService;
 
     public GalleryController(ArtworkService artworkService,
-                              DailyThemeService dailyThemeService) {
+                             DailyThemeService dailyThemeService) {
         this.artworkService = artworkService;
         this.dailyThemeService = dailyThemeService;
     }
@@ -37,6 +39,7 @@ public class GalleryController {
     @PostMapping("/upload")
     public String upload(@Valid @ModelAttribute("uploadDto") ArtworkUploadDto dto,
                          BindingResult bindingResult,
+                         @AuthenticationPrincipal UserDetails userDetails,
                          RedirectAttributes redirectAttributes,
                          Model model) {
 
@@ -49,15 +52,12 @@ public class GalleryController {
         }
 
         try {
-            artworkService.upload(dto, todayTheme.getWord());
-            redirectAttributes.addFlashAttribute("successMessage",
-                "Arte enviada com sucesso! 🎨");
+            artworkService.upload(dto, todayTheme.getWord(), userDetails.getUsername());
+            redirectAttributes.addFlashAttribute("successMessage", "Arte enviada com sucesso! 🎨");
         } catch (IllegalArgumentException e) {
-
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                "Erro ao salvar a imagem. Tente novamente.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao salvar a imagem.");
         }
 
         return "redirect:/gallery";

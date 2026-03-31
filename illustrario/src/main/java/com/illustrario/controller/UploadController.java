@@ -4,6 +4,8 @@ import com.illustrario.dto.ArtworkUploadDto;
 import com.illustrario.service.ArtworkService;
 import com.illustrario.service.DailyThemeService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,8 +21,7 @@ public class UploadController {
     private final ArtworkService artworkService;
     private final DailyThemeService dailyThemeService;
 
-    public UploadController(ArtworkService artworkService,
-                            DailyThemeService dailyThemeService) {
+    public UploadController(ArtworkService artworkService, DailyThemeService dailyThemeService) {
         this.artworkService = artworkService;
         this.dailyThemeService = dailyThemeService;
     }
@@ -35,6 +36,7 @@ public class UploadController {
     @PostMapping
     public String processUpload(@Valid @ModelAttribute("uploadDto") ArtworkUploadDto dto,
                                 BindingResult bindingResult,
+                                @AuthenticationPrincipal UserDetails userDetails,
                                 RedirectAttributes redirectAttributes,
                                 Model model) {
 
@@ -46,14 +48,13 @@ public class UploadController {
         }
 
         try {
-            artworkService.upload(dto, todayTheme.getWord());
-            redirectAttributes.addFlashAttribute("successMessage", "Arte enviada com sucesso! 🎨");
-            return "redirect:/gallery";
+            artworkService.upload(dto, todayTheme.getWord(), userDetails.getUsername());
+            redirectAttributes.addFlashAttribute("successMessage", "Arte enviada! 🎨");
+            return "redirect:/";   // ← vai para a homepage após upload
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                "Erro ao salvar a imagem. Tente novamente.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao salvar a imagem.");
         }
 
         return "redirect:/upload";

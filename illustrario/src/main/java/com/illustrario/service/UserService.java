@@ -16,12 +16,14 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User register(User user) {
+        user.setEmail(user.getEmail().trim().toLowerCase());
+        user.setNickname(user.getNickname().trim());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
         return repo.save(user);
     }
 
     public User findByEmail(String email) {
-        return repo.findByEmail(email).orElse(null);
+        return repo.findByEmail(email.trim().toLowerCase()).orElse(null);
     }
 }

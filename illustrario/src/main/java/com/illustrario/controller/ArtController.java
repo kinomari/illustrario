@@ -5,6 +5,8 @@ import com.illustrario.service.ArtworkService;
 import com.illustrario.service.CommentService;
 import com.illustrario.service.LikeService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,27 +29,21 @@ public class ArtController {
 
     @GetMapping("/{id}")
     public String artworkDetail(@PathVariable Long id,
-                                HttpServletRequest request,
+                                @AuthenticationPrincipal UserDetails userDetails,
                                 Model model) {
 
         Artwork artwork = artworkService.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Obra não encontrada: " + id));
 
-        String visitorIp = getClientIp(request);
+        long likeCount = likeService.countLikes(id);
+        boolean hasLiked = userDetails != null &&
+            likeService.hasLiked(id, userDetails.getUsername());
 
         model.addAttribute("artwork", artwork);
         model.addAttribute("comments", commentService.getComments(id));
-        model.addAttribute("likeCount", likeService.countLikes(id));
-        model.addAttribute("hasLiked", likeService.hasLiked(id, visitorIp));
+        model.addAttribute("likeCount", likeCount);
+        model.addAttribute("hasLiked", hasLiked);
 
-        return "gallery/artwork-detail";
-    }
-
-    private String getClientIp(HttpServletRequest request) {
-        String forwarded = request.getHeader("X-Forwarded-For");
-        if (forwarded != null && !forwarded.isBlank()) {
-            return forwarded.split(",")[0].trim();
-        }
-        return request.getRemoteAddr();
+        return "art_details";
     }
 }

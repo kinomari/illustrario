@@ -1,12 +1,11 @@
 package com.illustrario.controller;
 
-import com.illustrario.model.Comment;
 import com.illustrario.service.CommentService;
-import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 
 @Controller
 @RequestMapping("/comments")
@@ -20,10 +19,12 @@ public class CommentController {
 
     @PostMapping("/{artworkId}")
     public String addComment(@PathVariable Long artworkId,
-                             @RequestParam String authorName,
                              @RequestParam String content,
+                             @AuthenticationPrincipal UserDetails userDetails,
                              RedirectAttributes redirectAttributes) {
         try {
+            // Usa o e-mail do usuário logado como nome do autor
+            String authorName = userDetails.getUsername();
             commentService.addComment(artworkId, authorName, content);
             redirectAttributes.addFlashAttribute("successMessage", "Comentário adicionado!");
         } catch (Exception e) {
