@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artes | Admin</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/admin.css}" />
+</head>
+<body>
+  <div th:replace="~{fragments/header :: header}"></div>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <p class="sidebar-title">Painel</p>
+      <a th:href="@{/admin}">Dashboard</a>
+      <p class="sidebar-title">Conte&uacute;do</p>
+      <a class="active" th:href="@{/admin/artworks}">Artes</a>
+      <a th:href="@{/admin/comments}">Coment&aacute;rios</a>
+      <p class="sidebar-title">Usu&aacute;rios</p>
+      <a th:href="@{/admin/users}">Usu&aacute;rios</a>
+    </aside>
+    <main class="admin-content">
+      <h2 class="admin-title">Artes</h2>
+
+      <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+      <div class="filter-bar">
+        <a
+          class="filter-btn"
+          th:href="@{/admin/artworks(filter='all')}"
+          th:classappend="${filter == 'all'} ? ' active' : ''"
+          >Todas</a
+        >
+        <a
+          class="filter-btn"
+          th:href="@{/admin/artworks(filter='active')}"
+          th:classappend="${filter == 'active'} ? ' active' : ''"
+          >Vis&iacute;veis</a
+        >
+        <a
+          class="filter-btn"
+          th:href="@{/admin/artworks(filter='removed')}"
+          th:classappend="${filter == 'removed'} ? ' active' : ''"
+          >Ocultadas</a
+        >
+      </div>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Imagem</th>
+            <th>T&iacute;tulo</th>
+            <th>Artista</th>
+            <th>Tema</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th class="admin-col-actions">A&ccedil;&otilde;es</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="a : ${artworks}" th:classappend="${a.removed} ? 'removed' : ''">
+            <td>
+              <img class="admin-thumb" th:src="${a.filePath}" th:alt="${a.title}" />
+            </td>
+            <td>
+              <a class="admin-link-primary" th:href="@{'/gallery/artwork/' + ${a.id}}" th:text="${a.title}"></a>
+            </td>
+            <td th:text="${a.artistName}">-</td>
+            <td th:text="${a.theme}">-</td>
+            <td th:text="${#temporals.format(a.uploadedAt, 'dd/MM/yy')}">-</td>
+            <td>
+              <span class="badge badge-ok" th:if="${!a.removed}">Vis&iacute;vel</span>
+              <span class="badge badge-removed" th:if="${a.removed}">Oculta</span>
+            </td>
+            <td class="admin-actions-wrap admin-col-actions">
+              <form th:if="${!a.removed}" th:action="@{'/admin/artwork/' + ${a.id} + '/remove'}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button class="btn-sm btn-hide">Ocultar</button>
+              </form>
+
+              <form th:if="${a.removed}" th:action="@{'/admin/artwork/' + ${a.id} + '/restore'}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button class="btn-sm btn-restore">Restaurar</button>
+              </form>
+
+              <form
+                th:action="@{'/admin/artwork/' + ${a.id} + '/hard-delete'}"
+                method="post"
+                onsubmit="return confirm('Apagar PERMANENTEMENTE? Esta a&ccedil;&atilde;o n&atilde;o pode ser desfeita.')"
+              >
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button class="btn-sm btn-danger">Apagar</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

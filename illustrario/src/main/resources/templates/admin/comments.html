@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coment&aacute;rios | Admin</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/admin.css}" />
+</head>
+<body>
+  <div th:replace="~{fragments/header :: header}"></div>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <p class="sidebar-title">Painel</p>
+      <a th:href="@{/admin}">Dashboard</a>
+      <p class="sidebar-title">Conte&uacute;do</p>
+      <a th:href="@{/admin/artworks}">Artes</a>
+      <a class="active" th:href="@{/admin/comments}">Coment&aacute;rios</a>
+      <p class="sidebar-title">Usu&aacute;rios</p>
+      <a th:href="@{/admin/users}">Usu&aacute;rios</a>
+    </aside>
+    <main class="admin-content">
+      <h2 class="admin-title">Coment&aacute;rios</h2>
+
+      <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+      <div class="filter-bar">
+        <a
+          class="filter-btn"
+          th:href="@{/admin/comments(filter='all')}"
+          th:classappend="${filter == 'all'} ? ' active' : ''"
+          >Todos</a
+        >
+        <a
+          class="filter-btn"
+          th:href="@{/admin/comments(filter='active')}"
+          th:classappend="${filter == 'active'} ? ' active' : ''"
+          >Vis&iacute;veis</a
+        >
+        <a
+          class="filter-btn"
+          th:href="@{/admin/comments(filter='removed')}"
+          th:classappend="${filter == 'removed'} ? ' active' : ''"
+          >Ocultados</a
+        >
+      </div>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Autor</th>
+            <th>Coment&aacute;rio</th>
+            <th>Arte</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>A&ccedil;&otilde;es</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="c : ${comments}" th:classappend="${c.removed} ? 'removed' : ''">
+            <td>
+              <a
+                class="admin-link-primary"
+                th:href="@{'/perfil/' + ${c.authorName}}"
+                th:text="${c.authorName}"
+              ></a>
+            </td>
+            <td th:text="${#strings.abbreviate(c.content, 60)}">-</td>
+            <td>
+              <a
+                class="admin-link-secondary"
+                th:href="@{'/gallery/artwork/' + ${c.artwork.id}}"
+                th:text="${c.artwork.title}"
+              ></a>
+            </td>
+            <td th:text="${#temporals.format(c.createdAt, 'dd/MM/yy HH:mm')}">-</td>
+            <td>
+              <span class="badge badge-ok" th:if="${!c.removed}">Vis&iacute;vel</span>
+              <span class="badge badge-removed" th:if="${c.removed}">Oculto</span>
+            </td>
+            <td class="admin-actions">
+              <form th:if="${!c.removed}" th:action="@{'/admin/comment/' + ${c.id} + '/remove'}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button class="btn-sm btn-hide">Ocultar</button>
+              </form>
+              <form th:if="${c.removed}" th:action="@{'/admin/comment/' + ${c.id} + '/restore'}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button class="btn-sm btn-restore">Restaurar</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
+

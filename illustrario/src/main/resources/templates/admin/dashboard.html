@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin | Illustrario</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/admin.css}" />
+</head>
+<body>
+  <div th:replace="~{fragments/header :: header}"></div>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <p class="sidebar-title">Painel</p>
+      <a class="active" th:href="@{/admin}">Dashboard</a>
+      <p class="sidebar-title">Conte&uacute;do</p>
+      <a th:href="@{/admin/artworks}">Artes</a>
+      <a th:href="@{/admin/comments}">Coment&aacute;rios</a>
+      <p class="sidebar-title">Usu&aacute;rios</p>
+      <a th:href="@{/admin/users}">Usu&aacute;rios</a>
+    </aside>
+
+    <main class="admin-content">
+      <h2 class="admin-title">Dashboard</h2>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-number" th:text="${artworksOk}">0</div>
+          <div class="stat-label">Artes vis&iacute;veis</div>
+        </div>
+        <div class="stat-card stat-removed">
+          <div class="stat-number" th:text="${artworksRemoved}">0</div>
+          <div class="stat-label">Artes ocultadas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" th:text="${commentsOk}">0</div>
+          <div class="stat-label">Coment&aacute;rios vis&iacute;veis</div>
+        </div>
+        <div class="stat-card stat-removed">
+          <div class="stat-number" th:text="${commentsRemoved}">0</div>
+          <div class="stat-label">Coment&aacute;rios ocultados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" th:text="${totalUsers}">0</div>
+          <div class="stat-label">Usu&aacute;rios cadastrados</div>
+        </div>
+      </div>
+
+      <div class="admin-quick-links">
+        <a
+          class="admin-quick-link admin-quick-link-gold"
+          th:href="@{/admin/artworks(filter='removed')}"
+          th:if="${artworksRemoved > 0}"
+        >
+          Ver artes ocultadas
+        </a>
+        <a
+          class="admin-quick-link admin-quick-link-vinho"
+          th:href="@{/admin/comments(filter='removed')}"
+          th:if="${commentsRemoved > 0}"
+        >
+          Ver coment&aacute;rios ocultados
+        </a>
+      </div>
+    </main>
+  </div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
+
