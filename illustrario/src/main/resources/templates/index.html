@@ -1,197 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Illustrario</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .hero {
-            display: flex;
-            align-items: center;
-            padding: 3rem 2rem;
-            gap: 2rem;
-            background: var(--bg);
-        }
-        .hero-theme {
-            flex: 0 0 auto;
-        }
-        .hero-theme .theme-label {
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--subtext);
-            margin: 0 0 0.3rem;
-        }
-        .hero-theme .theme-word {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--vinho);
-            margin: 0 0 0.3rem;
-        }
-        .hero-theme .theme-hint {
-            font-size: 0.9rem;
-            color: var(--subtext);
-            font-style: italic;
-            margin: 0 0 1rem;
-        }
-        .hero-divider {
-            width: 1px;
-            height: 120px;
-            background: #ccc;
-            flex-shrink: 0;
-        }
-        .masonry-wall {
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding: 1.5rem 2rem;
-            background: #fff;
-            scrollbar-width: thin;
-            scrollbar-color: var(--dourado) #eee;
-        }
-        .masonry-wall::-webkit-scrollbar { height: 6px; }
-        .masonry-wall::-webkit-scrollbar-thumb { background: var(--dourado); border-radius: 3px; }
-        .masonry-inner {
-            display: flex;
-            gap: 14px;
-            align-items: flex-start;
-            width: max-content;
-        }
-        .masonry-col {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 220px;
-        }
-        .masonry-card {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            cursor: pointer;
-            text-decoration: none;
-            display: block;
-            background: #e8e8e8;
-            transition: transform 0.22s ease, box-shadow 0.22s ease;
-        }
-        .masonry-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 28px rgba(0,0,0,0.2);
-            z-index: 10;
-            position: relative;
-        }
-        .masonry-card img {
-            width: 100%;
-            display: block;
-            object-fit: cover;
-        }
-        .masonry-overlay {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.75));
-            color: #fff;
-            padding: 32px 14px 14px;
-            opacity: 0;
-            transition: opacity 0.22s ease;
-        }
-        .masonry-card:hover .masonry-overlay { opacity: 1; }
-        .mo-title { margin: 0; font-size: 13px; font-weight: 600; }
-        .mo-meta  { margin: 3px 0 0; font-size: 11px; opacity: 0.75; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Illustrario</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
-    <div th:replace="~{fragments/header :: header}"></div>
+  <div th:replace="~{fragments/header :: header}"></div>
 
-    <main>
-        <section class="hero">
-            <div class="hero-theme">
-                <p class="theme-label">Tema de hoje</p>
-                <h1 class="theme-word" th:text="${theme.word}">tema</h1>
-                <p class="theme-hint" th:text="${theme.hint}"></p>
-                <a th:href="@{/upload}"
-                   style="display:inline-block; padding:9px 24px; background:var(--dourado);
-                          color:#000; font-weight:600; border-radius:24px; text-decoration:none; font-size:0.9rem;">
-                    Enviar obra
-                </a>
-            </div>
-            <div class="hero-divider"></div>
-            <p style="color:var(--subtext); font-size:0.9rem; max-width:300px; margin:0;">
-                Cada dia uma palavra. Cada artista, uma visão diferente.
-                <br><br>
-                <a th:href="@{/sobre}" style="color:var(--dourado); text-decoration:none; font-weight:600;">
-                    Saiba mais →
-                </a>
-            </p>
-        </section>
+  <main>
+    <section class="hero">
+      <p class="hero-text">
+        Cada dia uma palavra.<br />Cada artista, uma vis&atilde;o diferente.
+        <br /><br />
+        <a class="inline-link-accent" th:href="@{/sobre}">Saiba mais &rarr;</a>
+      </p>
+      <div class="hero-divider"></div>
+      <div class="hero-theme">
+        <p class="theme-label">Tema de hoje</p>
+        <h1 class="theme-word">
+          <a class="theme-word-link" th:href="@{/gallery}" th:text="${theme.word}">tema</a>
+        </h1>
+        <p class="theme-hint" th:text="${theme.hint}"></p>
+      </div>
+    </section>
 
-        <div style="padding: 0.5rem 2rem 0; background:#fff;">
-            <h2 style="margin:0 0 0.2rem; color:var(--vinho); font-size:1.2rem;">Obras recentes</h2>
-        </div>
+    <div class="home-empty" th:if="${#lists.isEmpty(recentArtworks)}">
+      Nenhuma obra enviada ainda.
+      <a class="home-empty-link" th:href="@{/upload}">Seja o primeiro!</a>
+    </div>
 
-        <div th:if="${#lists.isEmpty(recentArtworks)}"
-             style="background:#fff; padding:2rem 2rem 3rem; color:var(--subtext);">
-            Nenhuma obra enviada ainda.
-            <a th:href="@{/upload}" style="color:var(--dourado); font-weight:600;">Seja o primeiro!</a>
-        </div>
+    <div
+      class="masonry-wall home-masonry-wall"
+      th:unless="${#lists.isEmpty(recentArtworks)}"
+      id="homeMasonryWall"
+    >
+      <div
+        class="gallery home-masonry-track"
+        id="homeMasonryTrack"
+        th:attr="data-next-page=${recentArtworksNextPage},data-page-size=${recentArtworksPageSize},data-has-more=${recentArtworksHasMore}"
+      >
+        <a
+          class="masonry-card masonry-item"
+          th:each="a : ${recentArtworks}"
+          th:href="@{'/gallery/artwork/' + ${a.id}}"
+        >
+          <img class="home-masonry-image" th:src="${a.filePath}" th:alt="${a.title}" loading="lazy" />
 
-        <div class="masonry-wall" th:unless="${#lists.isEmpty(recentArtworks)}">
-            <div class="masonry-inner">
+          <div class="masonry-overlay">
+            <p class="mo-title" th:text="${a.title}"></p>
+            <p class="mo-meta" th:if="${a.artistName}" th:text="'por ' + ${a.artistName}"></p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </main>
 
-                <div class="masonry-col" style="margin-top:0;">
-                    <th:block th:each="a,s : ${recentArtworks}" th:if="${s.index % 4 == 0 and !a.removed}">
-                        <a class="masonry-card" th:href="@{'/gallery/artwork/' + ${a.id}}">
-                            <img th:src="${a.filePath}" th:alt="${a.title}" loading="lazy"
-                                 th:style="${s.index % 3 == 0} ? 'height:280px' : (${s.index % 3 == 1} ? 'height:200px' : 'height:340px')"/>
-                            <div class="masonry-overlay">
-                                <p class="mo-title" th:text="${a.title}"></p>
-                                <p class="mo-meta" th:if="${a.artistName}" th:text="'por ' + ${a.artistName}"></p>
-                            </div>
-                        </a>
-                    </th:block>
-                </div>
-
-                <div class="masonry-col" style="margin-top:50px;">
-                    <th:block th:each="a,s : ${recentArtworks}" th:if="${s.index % 4 == 1 and !a.removed}">
-                        <a class="masonry-card" th:href="@{'/gallery/artwork/' + ${a.id}}">
-                            <img th:src="${a.filePath}" th:alt="${a.title}" loading="lazy"
-                                 th:style="${s.index % 3 == 0} ? 'height:320px' : (${s.index % 3 == 1} ? 'height:240px' : 'height:200px')"/>
-                            <div class="masonry-overlay">
-                                <p class="mo-title" th:text="${a.title}"></p>
-                                <p class="mo-meta" th:if="${a.artistName}" th:text="'por ' + ${a.artistName}"></p>
-                            </div>
-                        </a>
-                    </th:block>
-                </div>
-
-                <div class="masonry-col" style="margin-top:20px;">
-                    <th:block th:each="a,s : ${recentArtworks}" th:if="${s.index % 4 == 2 and !a.removed}">
-                        <a class="masonry-card" th:href="@{'/gallery/artwork/' + ${a.id}}">
-                            <img th:src="${a.filePath}" th:alt="${a.title}" loading="lazy"
-                                 th:style="${s.index % 3 == 0} ? 'height:220px' : (${s.index % 3 == 1} ? 'height:300px' : 'height:260px')"/>
-                            <div class="masonry-overlay">
-                                <p class="mo-title" th:text="${a.title}"></p>
-                                <p class="mo-meta" th:if="${a.artistName}" th:text="'por ' + ${a.artistName}"></p>
-                            </div>
-                        </a>
-                    </th:block>
-                </div>
-
-                <div class="masonry-col" style="margin-top:70px;">
-                    <th:block th:each="a,s : ${recentArtworks}" th:if="${s.index % 4 == 3 and !a.removed}">
-                        <a class="masonry-card" th:href="@{'/gallery/artwork/' + ${a.id}}">
-                            <img th:src="${a.filePath}" th:alt="${a.title}" loading="lazy"
-                                 th:style="${s.index % 3 == 0} ? 'height:260px' : (${s.index % 3 == 1} ? 'height:180px' : 'height:320px')"/>
-                            <div class="masonry-overlay">
-                                <p class="mo-title" th:text="${a.title}"></p>
-                                <p class="mo-meta" th:if="${a.artistName}" th:text="'por ' + ${a.artistName}"></p>
-                            </div>
-                        </a>
-                    </th:block>
-                </div>
-
-            </div>
-        </div>
-    </main>
-
-    <div th:replace="~{fragments/footer :: footer}"></div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+  <script th:src="@{/js/home-masonry.js}"></script>
 </body>
 </html>
