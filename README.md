@@ -1,6 +1,5 @@
-# Illustrario
-
-**Illustrario** é uma galeria de arte web com tema diário — a cada dia uma palavra-tema é sorteada automaticamente, e artistas podem enviar suas obras inspiradas nela.
+**Illustrario** é uma plataforma web para compartilhar ilustrações com **tema diário**.
+Todos os dias, uma palavra-tema é selecionada automaticamente e a comunidade pode publicar artes inspiradas nela.
 
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 ![Java](https://img.shields.io/badge/Java-22-blue)
@@ -11,111 +10,139 @@
 
 ## ✨ Funcionalidades
 
-- 🎨 **Tema do dia automático** — palavra sorteada diariamente de um pool, sem repetição até todas serem usadas
-- 🖼️ **Upload de obras** — envio de imagens com título, nome do artista e descrição
-- 🔍 **Busca** — encontre obras por título ou descrição
-- 👤 **Cadastro e login** — autenticação com Spring Security
-- 🛡️ **Moderação** — curador pode ocultar obras e comentários inadequados
-- ❤️ **Curtidas** — visitantes podem curtir obras (por IP, sem necessidade de login)
-- 💬 **Comentários** — comentários por obra
+- 🎯 **Tema do dia automático** com rotação equilibrada das palavras
+- 🖼️ **Upload de artes** com título, artista e descrição
+- 🔎 **Busca** por título e descrição
+- 👤 **Cadastro e login** com Spring Security
+- ❤️ **Curtidas por IP** (sem necessidade de login)
+- 💬 **Comentários** por obra
+- 🛡️ **Moderação** para curadoria de obras e comentários
+- 🧭 **Explorar** artes e perfis públicos
 
 ---
 
-## 🗂️ Estrutura do projeto
+## 🧱 Stack do projeto
 
+- **Backend:** Java 22 + Spring Boot 3.5.7
+- **Web MVC:** Spring Web + Thymeleaf
+- **Segurança:** Spring Security 6
+- **Persistência:** Spring Data JPA + Hibernate
+- **Banco em desenvolvimento:** H2 (arquivo local)
+- **Banco opcional para produção:** PostgreSQL (configuração comentada no `application.properties`)
+- **Upload e processamento de imagem:** Multipart + Thumbnailator
+- **Build:** Maven Wrapper (`./mvnw`)
+
+---
+
+## 📁 Estrutura (visão geral)
+
+```text
+illustrario/
+├── src/main/java/com/illustrario/
+│   ├── config/
+│   ├── controller/
+│   ├── dto/
+│   ├── model/
+│   ├── repository/
+│   └── service/
+├── src/main/resources/
+│   ├── templates/
+│   ├── static/
+│   └── application.properties
+└── pom.xml
 ```
-src/main/java/com/illustrario/
-├── config/          # Segurança, scheduling, inicialização de dados
-├── controller/      # Rotas web e API REST
-├── dto/             # Objetos de transferência de dados (formulários)
-├── model/           # Entidades JPA
-├── repository/      # Interfaces Spring Data JPA
-└── service/         # Lógica de negócio
-
-src/main/resources/
-├── templates/       # Templates Thymeleaf
-│   ├── fragments/   # Header e footer reutilizáveis
-│   ├── gallery/     # Galeria do tema do dia
-│   └── upload/      # Formulário de envio
-└── static/css/      # Estilos
-```
 
 ---
 
-## ⚙️ Tecnologias
-
-| Camada | Tecnologia |
-|---|---|
-| Backend | Java 22 + Spring Boot 3.5.7 |
-| Persistência | Spring Data JPA + Hibernate |
-| Banco (dev) | H2 (em memória) |
-| Banco (prod) | PostgreSQL |
-| Segurança | Spring Security 6 |
-| Templates | Thymeleaf + thymeleaf-extras-springsecurity6 |
-| Upload | Spring Multipart + Thumbnailator |
-| Build | Maven |
-
----
-
-## 🚀 Como executar
+## 🚀 Como executar localmente
 
 ### Pré-requisitos
-- Java 22+
-- Maven 4+
 
-### Passos
+- Java 22+
+- Git
+
+> O Maven não precisa estar instalado globalmente, pois o projeto já inclui o **Maven Wrapper**.
+
+### 1) Clonar o repositório
 
 ```bash
-# 1. Clonar o repositório
 git clone https://github.com/kinomari/illustrario.git
 cd illustrario/illustrario
-
-# 2. Executar
-mvn spring-boot:run
 ```
 
-Acesse em **http://localhost:8080**
+### 2) Executar a aplicação
 
-### Console do banco H2 (dev)
-- URL: http://localhost:8080/h2-console
-- JDBC URL: `jdbc:h2:mem:illustrariodb`
-- Usuário: `sa` | Senha: *(vazio)*
+```bash
+./mvnw spring-boot:run
+```
 
----
+Aplicação disponível em: **http://localhost:8080**
 
-## 🗺️ Rotas disponíveis
+### 3) Executar testes
 
-| Rota | Descrição |
-|---|---|
-| `GET /` | Homepage com tema do dia e obras recentes |
-| `GET /gallery` | Galeria completa + formulário de upload |
-| `POST /gallery/upload` | Envia uma obra |
-| `GET /search?q=...` | Busca obras por título ou descrição |
-| `GET /register` | Cadastro de usuário |
-| `GET /login` | Login |
-| `GET /upload` | Formulário de upload standalone |
-| `GET /api/likes/{id}` | Curtidas de uma obra |
-| `POST /api/likes/{id}` | Curtir / descurtir |
-| `POST /admin/art/{id}/remove` | Ocultar obra (role: CURATOR) |
-| `POST /admin/comment/{id}/remove` | Ocultar comentário (role: CURATOR) |
+```bash
+./mvnw test
+```
 
 ---
 
-## 🌱 Como funciona o tema automático
+## 🗄️ Banco de dados e configurações
 
-Cada palavra do pool tem um contador de usos (`timesUsed`). O sorteio sempre escolhe aleatoriamente entre as palavras com o **menor contador** — garantindo que nenhuma palavra se repete antes de todas as outras terem sido usadas ao menos uma vez.
+### Desenvolvimento (padrão)
 
-O sorteio roda automaticamente todo dia à meia-noite (fuso `America/Sao_Paulo`). Se o servidor estiver fora do ar na meia-noite, o tema é sorteado automaticamente na primeira requisição do dia.
+Atualmente, o projeto está configurado para usar H2 persistido em arquivo local:
+
+- URL JDBC: `jdbc:h2:file:./data/illustrariodb`
+- Console H2: `http://localhost:8080/h2-console`
+- Usuário: `sa`
+- Senha: *(vazio)*
+
+### Produção (exemplo)
+
+No arquivo `src/main/resources/application.properties`, já existe um bloco comentado com exemplo de configuração para PostgreSQL.
 
 ---
 
-## 🔮 Próximos passos
+## 🛣️ Rotas principais
 
-- [ ] Página de perfil do artista
-- [ ] Galeria por tema/data
-- [ ] Painel admin para gerenciar palavras do pool
-- [ ] Deploy com PostgreSQL
-- [ ] Armazenamento de imagens em nuvem (S3 / Cloudflare R2)
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/` | Home com tema diário e artes recentes |
+| GET | `/gallery` | Galeria principal |
+| POST | `/gallery/upload` | Envio de nova arte |
+| GET | `/search?q=...` | Busca de artes |
+| GET | `/register` | Cadastro |
+| GET | `/login` | Login |
+| GET | `/explore` | Explorar temas anteriores |
+| GET | `/profile/{username}` | Perfil público |
+| POST | `/api/likes/{id}` | Curtir / descurtir |
+
+> Existem também rotas administrativas para moderação, acessíveis conforme permissões de usuário.
+
+---
+
+## 🌱 Tema diário: regra de seleção
+
+Cada palavra possui um contador de uso (`timesUsed`).
+O sorteio diário escolhe aleatoriamente dentre as palavras com **menor número de usos**, evitando repetição excessiva e equilibrando a distribuição ao longo do tempo.
+
+A atualização roda diariamente à meia-noite no fuso `America/Sao_Paulo` e há fallback para selecionar tema na primeira requisição do dia caso o servidor estivesse indisponível no horário do agendamento.
+
+---
+
+## 🧪 Qualidade e testes
+
+- Testes com JUnit (starter `spring-boot-starter-test`)
+- Dependência de `spring-security-test` para cenários com autenticação/autorização
+
+---
+
+## 🗺️ Roadmap (sugestões)
+
+- [ ] Melhorias de perfil de artista
+- [ ] Deploy e observabilidade em produção
+- [ ] Curadoria automática de artes e comentários que não sejam adequados
+- [ ] Assistente virtual da galeria
 
 ---
 
