@@ -1,43 +1,73 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 <head></head>
 <body>
-<header th:fragment="header">
+  <header th:fragment="header">
     <nav class="navbar">
+      <div class="nav-left">
         <div class="logo">
-            <a href="/"><img src="/images/logo.png" alt="Illustrario" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'"><span style="display:none">Illustrario</span></a>
+          <a href="/">
+            <img
+              src="/images/logo.png"
+              alt="Illustrario"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'"
+            />
+            <span class="logo-text-fallback">Illustrario</span>
+          </a>
         </div>
         <div class="menu">
-            <a class="nav-link" href="/">Início</a>
-            <a class="nav-link" href="/explorar">Explorar</a>
-            <a class="nav-link" href="/sobre">Sobre</a>
-            <a class="nav-link" href="/upload" sec:authorize="isAuthenticated()">Enviar Arte</a>
-            <a class="nav-link" href="/profile" sec:authorize="isAuthenticated()">Perfil</a>
+          <a class="nav-link" href="/">In&iacute;cio</a>
+          <a class="nav-link" href="/explorar">Explorar</a>
+          <a class="nav-link" href="/sobre">Sobre</a>
+          <a class="nav-link" href="/upload" sec:authorize="isAuthenticated()">Enviar Arte</a>
+          <a class="nav-link" href="/profile" sec:authorize="isAuthenticated()">Perfil</a>
+          <a
+            class="nav-link nav-link-admin"
+            href="/admin"
+            sec:authorize="hasRole('CURATOR')"
+            >Admin</a
+          >
         </div>
+      </div>
+
+      <div class="nav-right">
         <form class="search-box" th:action="@{/search}" method="get">
-            <input type="text" name="q" placeholder="Buscar artes..."/>
+          <input type="text" name="q" placeholder="Buscar artes..." />
         </form>
-        <div class="nav-right">
-            <span sec:authorize="!isAuthenticated()">
-                <a class="nav-link" href="/login">Entrar</a>
-                <a class="nav-link" href="/register">Cadastrar</a>
-            </span>
-            <span sec:authorize="isAuthenticated()" style="display:flex; align-items:center; gap:12px;">
-                <a class="nav-link" href="/profile"
-                   th:text="${currentNickname != null ? currentNickname : #authentication.name}">
-                    Perfil
-                </a>
-                <form th:action="@{/logout}" method="post" style="margin:0;">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <button type="submit" style="background:none; border:none; cursor:pointer;
-                            color:var(--bege); font-weight:600; font-size:1rem; padding:0;">
-                        Sair
-                    </button>
-                </form>
-            </span>
-        </div>
+
+        <span class="nav-auth-links" sec:authorize="!isAuthenticated()">
+          <a class="nav-link" href="/login">Entrar</a>
+          <a class="nav-link" href="/register">Cadastrar</a>
+        </span>
+
+        <span class="nav-user-area" sec:authorize="isAuthenticated()">
+          <a class="nav-user-profile" href="/profile">
+            <img
+              class="avatar"
+              th:if="${currentAvatarPath != null}"
+              th:src="${currentAvatarPath}"
+              alt="avatar"
+            />
+
+            <div
+              class="avatar-fallback"
+              th:unless="${currentAvatarPath != null}"
+              th:text="${currentNickname != null} ? ${#strings.toUpperCase(#strings.substring(currentNickname,0,1))} : '?'"
+            ></div>
+
+            <span
+              class="nav-link nav-user-name"
+              th:text="${currentNickname != null ? currentNickname : #authentication.name}"
+            ></span>
+          </a>
+
+          <a class="logout-btn" href="/logout">Sair</a>
+        </span>
+      </div>
     </nav>
-</header>
+  </header>
 </body>
 </html>

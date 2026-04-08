@@ -47,6 +47,7 @@ public class SecurityConfig {
                                  "/uploads/**").permitAll()
                 .requestMatchers("/upload/**", "/comments/**",
                                  "/api/likes/**", "/profile/**").authenticated()
+                .requestMatchers("/artwork/*/delete", "/comment/*/delete").authenticated()
                 .requestMatchers("/admin/**").authenticated()
                 .anyRequest().permitAll()
             )
@@ -65,7 +66,7 @@ public class SecurityConfig {
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
+                .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
             );
 
