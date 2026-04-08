@@ -50,7 +50,7 @@ public class UploadController {
         try {
             artworkService.upload(dto, todayTheme.getWord(), userDetails.getUsername());
             redirectAttributes.addFlashAttribute("successMessage", "Arte enviada! 🎨");
-            return "redirect:/";   // ← vai para a homepage após upload
+            return "redirect:/";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (IOException e) {

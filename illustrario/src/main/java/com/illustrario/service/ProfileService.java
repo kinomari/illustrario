@@ -15,7 +15,7 @@ public class ProfileService {
 
     private final UserRepository userRepository;
     private static final String AVATAR_DIR = "uploads/avatars";
-    private static final long MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    private static final long MAX_SIZE = 5 * 1024 * 1024;
 
     public ProfileService(UserRepository userRepository) {
         this.userRepository = userRepository;

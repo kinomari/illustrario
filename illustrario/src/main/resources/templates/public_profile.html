@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${user.nickname} + ' | Illustrario'">Perfil</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <div th:replace="~{fragments/header :: header}"></div>
+
+  <main class="page-container-lg">
+    <div class="pub-profile-header">
+      <img class="pub-avatar" th:if="${user.avatarPath}" th:src="${user.avatarPath}" th:alt="${user.nickname}" />
+      <div class="pub-avatar-placeholder" th:unless="${user.avatarPath}">
+        <span th:text="${#strings.toUpperCase(#strings.substring(user.nickname,0,1))}">A</span>
+      </div>
+
+      <div>
+        <h2 class="pub-profile-title" th:text="${user.nickname}">Apelido</h2>
+        <p class="pub-profile-meta">
+          <span th:text="${#lists.size(artworks)}">0</span> obra(s) enviada(s)
+        </p>
+      </div>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(artworks)}">
+      Este artista ainda n&atilde;o enviou nenhuma obra.
+    </div>
+
+    <div class="artwork-grid" th:unless="${#lists.isEmpty(artworks)}">
+      <article class="artwork-card" th:each="artwork : ${artworks}">
+        <a class="card-link-block" th:href="@{'/gallery/artwork/' + ${artwork.id}}">
+          <div class="artwork-image-wrapper">
+            <img class="artwork-image" th:src="${artwork.filePath}" th:alt="${artwork.title}" loading="lazy" />
+          </div>
+          <div class="artwork-info">
+            <h3 th:text="${artwork.title}">T&iacute;tulo</h3>
+            <p class="artwork-meta">
+              Tema: <span th:text="${artwork.theme}"></span> &middot;
+              <time th:text="${#temporals.format(artwork.uploadedAt, 'dd/MM/yyyy')}"></time>
+            </p>
+          </div>
+        </a>
+      </article>
+    </div>
+  </main>
+
+  <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

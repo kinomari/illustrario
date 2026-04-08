@@ -37,7 +37,6 @@ public class Artwork {
     @Column(nullable = false)
     private boolean removed = false;
 
-    // Vínculo com o usuário que enviou a obra
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

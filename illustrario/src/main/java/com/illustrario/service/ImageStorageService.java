@@ -43,7 +43,7 @@ public class ImageStorageService {
 
     public void delete(String filePath) {
         try {
-            Path path = Paths.get(filePath.substring(1)); // remove a "/" inicial
+            Path path = Paths.get(filePath.substring(1));
             Files.deleteIfExists(path);
 
             String thumbPath = filePath.replace(

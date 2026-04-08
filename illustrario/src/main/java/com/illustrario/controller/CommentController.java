@@ -1,5 +1,6 @@
 package com.illustrario.controller;
 
+import com.illustrario.repository.UserRepository;
 import com.illustrario.service.CommentService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,9 +13,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CommentController {
 
     private final CommentService commentService;
+    private final UserRepository userRepository;
 
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService,
+                             UserRepository userRepository) {
         this.commentService = commentService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/{artworkId}")
@@ -23,14 +27,16 @@ public class CommentController {
                              @AuthenticationPrincipal UserDetails userDetails,
                              RedirectAttributes redirectAttributes) {
         try {
-            // Usa o e-mail do usuário logado como nome do autor
-            String authorName = userDetails.getUsername();
-            commentService.addComment(artworkId, authorName, content);
+            String nickname = userRepository
+                .findByEmail(userDetails.getUsername())
+                .map(u -> u.getNickname())
+                .orElse(userDetails.getUsername());
+
+            commentService.addComment(artworkId, nickname, content);
             redirectAttributes.addFlashAttribute("successMessage", "Comentário adicionado!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao comentar: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro: " + e.getMessage());
         }
-
         return "redirect:/gallery/artwork/" + artworkId;
     }
 }

@@ -19,7 +19,6 @@ public class User {
     private String password;
     private String role = "ROLE_USER";
 
-    // Caminho do avatar salvo em disco
     @Column(name = "avatar_path")
     private String avatarPath;
 
