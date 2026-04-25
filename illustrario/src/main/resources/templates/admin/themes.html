@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temas | Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <p class="sidebar-title">Painel</p>
+            <a th:href="@{/admin}" class="active">Dashboard</a>
+            <p class="sidebar-title">Conteúdo</p>
+            <a th:href="@{/admin/artworks}">Artes</a>
+            <a th:href="@{/admin/comments}">Comentários</a>
+            <a th:href="@{/admin/themes}">Temas</a>
+            <p class="sidebar-title">Usuários</p>
+            <a th:href="@{/admin/users}">Usuários</a>
+        </aside>
+
+        <main class="admin-content">
+
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+            <h2 style="color:var(--vinho); margin-top:0;">Gerenciar Temas</h2>
+
+            <div style="background:#fff; border-radius:10px; padding:1.2rem 1.5rem;
+                        box-shadow:0 2px 8px rgba(0,0,0,0.07); margin-bottom:2rem;
+                        border-left:4px solid var(--dourado);">
+                <p style="margin:0; font-size:0.8rem; color:var(--subtext); text-transform:uppercase; letter-spacing:2px;">Tema de hoje</p>
+                <h3 style="margin:0.3rem 0; color:var(--vinho); font-size:1.8rem;"
+                    th:text="${todayTheme.word}">palavra</h3>
+                <p style="margin:0; color:var(--subtext); font-style:italic;"
+                   th:text="${todayTheme.hint}"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start;">
+
+                <div>
+                    <section style="background:#fff; border-radius:10px; padding:1.5rem;
+                                    box-shadow:0 2px 8px rgba(0,0,0,0.07); margin-bottom:1.5rem;">
+                        <h3 style="margin:0 0 1rem; color:var(--vinho);">Definir tema por data</h3>
+                        <form th:action="@{/admin/themes/set}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" name="date" class="form-input"
+                                       th:value="${today}" required/>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Palavra</label>
+                                <select name="word" class="form-input" id="wordSelect"
+                                        onchange="fillHint(this)">
+                                    <option value="">— Escolha do pool —</option>
+                                    <option th:each="w : ${words}"
+                                            th:value="${w.word}"
+                                            th:text="${w.word}"
+                                            th:data-hint="${w.hint}">
+                                    </option>
+                                </select>
+                                <small style="color:#aaa;">ou digite abaixo para usar palavra fora do pool</small>
+                                <input type="text" name="word" id="wordCustom" class="form-input"
+                                       placeholder="Ou escreva uma palavra personalizada..."
+                                       style="margin-top:0.5rem;"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Dica <small style="color:#aaa;">(opcional — preenchida automaticamente do pool)</small></label>
+                                <input type="text" name="hint" id="hintInput" class="form-input"
+                                       placeholder="Ex: Pense em reflexos, identidade, dualidade..."/>
+                            </div>
+
+                            <button type="submit" class="btn-submit"
+                                    style="width:auto; padding:8px 20px;">
+                                ✅ Salvar tema
+                            </button>
+                        </form>
+                    </section>
+
+                    <section style="background:#fff; border-radius:10px; padding:1.5rem;
+                                    box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+                        <h3 style="margin:0 0 0.5rem; color:var(--vinho);">Sortear automaticamente</h3>
+                        <p style="color:var(--subtext); font-size:0.9rem; margin:0 0 1rem;">
+                            Sorteia uma palavra do pool respeitando a lógica anti-repetição.
+                        </p>
+                        <form th:action="@{/admin/themes/draw}" method="post"
+                              onsubmit="return confirm('Sortear novo tema? O tema atual da data será substituído.')">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" name="date" class="form-input"
+                                       th:value="${today}" required/>
+                            </div>
+                            <button type="submit" class="btn-submit"
+                                    style="width:auto; padding:8px 20px; background:var(--dourado); color:#000;">
+                                🎲 Sortear
+                            </button>
+                        </form>
+                    </section>
+                </div>
+
+                <div>
+                    <section style="background:#fff; border-radius:10px; padding:1.5rem;
+                                    box-shadow:0 2px 8px rgba(0,0,0,0.07); margin-bottom:1.5rem;">
+                        <h3 style="margin:0 0 1rem; color:var(--vinho);">Pool de palavras</h3>
+
+                        <table class="admin-table" style="margin-bottom:1rem;">
+                            <thead>
+                                <tr><th>Palavra</th><th>Dica</th><th>Usos</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="w : ${words}">
+                                    <td style="font-weight:600;" th:text="${w.word}">-</td>
+                                    <td style="color:#888; font-size:0.82rem;"
+                                        th:text="${#strings.abbreviate(w.hint, 40)}">-</td>
+                                    <td style="text-align:center;">
+                                        <span class="badge badge-ok" th:text="${w.timesUsed}">0</span>
+                                    </td>
+                                    <td>
+                                        <form th:action="@{'/admin/themes/words/' + ${w.id} + '/delete'}"
+                                              method="post"
+                                              onsubmit="return confirm('Remover esta palavra do pool?')">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                            <button class="btn-sm btn-hide">🗑</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <form th:action="@{/admin/themes/words/add}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <div style="display:flex; gap:0.5rem; align-items:flex-end; flex-wrap:wrap;">
+                                <div class="form-group" style="flex:1; margin:0;">
+                                    <label style="font-size:0.8rem;">Nova palavra</label>
+                                    <input type="text" name="word" class="form-input"
+                                           placeholder="palavra" required/>
+                                </div>
+                                <div class="form-group" style="flex:2; margin:0;">
+                                    <label style="font-size:0.8rem;">Dica</label>
+                                    <input type="text" name="hint" class="form-input"
+                                           placeholder="Dica de inspiração..."/>
+                                </div>
+                                <button type="submit" class="btn-sm btn-restore"
+                                        style="height:38px; padding:0 14px;">+ Adicionar</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+
+            <section style="background:#fff; border-radius:10px; padding:1.5rem;
+                            box-shadow:0 2px 8px rgba(0,0,0,0.07); margin-top:1rem;">
+                <h3 style="margin:0 0 1rem; color:var(--vinho);">Histórico (últimos 30)</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>Data</th><th>Palavra</th><th>Dica</th><th>Ação</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="t : ${themes}"
+                            th:classappend="${t.date == today} ? 'today-row' : ''">
+                            <td>
+                                <span th:text="${#temporals.format(t.date, 'dd/MM/yyyy')}">-</span>
+                                <span th:if="${t.date == today}"
+                                      class="badge badge-ok" style="margin-left:6px;">Hoje</span>
+                                <span th:if="${t.date.isAfter(today)}"
+                                      class="badge badge-curator" style="margin-left:6px;">Futuro</span>
+                            </td>
+                            <td style="font-weight:600; color:var(--vinho);" th:text="${t.word}">-</td>
+                            <td style="color:#888; font-size:0.85rem;"
+                                th:text="${#strings.abbreviate(t.hint, 50)}">-</td>
+                            <td>
+
+                                <a th:href="@{/admin/themes}" style="color:var(--dourado); font-size:0.82rem;">
+                                    Alterar ↑
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+        </main>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+
+        function fillHint(select) {
+            const option = select.options[select.selectedIndex];
+            const hint = option.getAttribute('data-hint') || '';
+            document.getElementById('hintInput').value = hint;
+            document.getElementById('wordCustom').value = '';
+        }
+
+        document.getElementById('wordCustom').addEventListener('input', function() {
+            if (this.value) document.getElementById('wordSelect').value = '';
+        });
+
+        document.querySelector('form[action*="/set"]').addEventListener('submit', function(e) {
+            const custom = document.getElementById('wordCustom').value.trim();
+            const select = document.getElementById('wordSelect').value;
+            if (!custom && !select) {
+                e.preventDefault();
+                alert('Selecione ou digite uma palavra.');
+                return;
+            }
+
+            if (custom) {
+                document.getElementById('wordSelect').disabled = true;
+            } else {
+                document.getElementById('wordCustom').disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>

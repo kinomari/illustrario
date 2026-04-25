@@ -1,71 +1,77 @@
 ﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel Admin | Illustrario</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}" />
-  <link rel="stylesheet" th:href="@{/css/admin.css}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
-  <div th:replace="~{fragments/header :: header}"></div>
+    <div th:replace="~{fragments/header :: header}"></div>
 
-  <div class="admin-layout">
-    <aside class="admin-sidebar">
-      <p class="sidebar-title">Painel</p>
-      <a class="active" th:href="@{/admin}">Dashboard</a>
-      <p class="sidebar-title">Conte&uacute;do</p>
-      <a th:href="@{/admin/artworks}">Artes</a>
-      <a th:href="@{/admin/comments}">Coment&aacute;rios</a>
-      <p class="sidebar-title">Usu&aacute;rios</p>
-      <a th:href="@{/admin/users}">Usu&aacute;rios</a>
-    </aside>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <p class="sidebar-title">Painel</p>
+            <a th:href="@{/admin}" class="active">Dashboard</a>
+            <p class="sidebar-title">Conteúdo</p>
+            <a th:href="@{/admin/artworks}">Artes</a>
+            <a th:href="@{/admin/comments}">Comentários</a>
+            <a th:href="@{/admin/themes}">Temas</a>
+            <p class="sidebar-title">Usuários</p>
+            <a th:href="@{/admin/users}">Usuários</a>
+        </aside>
 
-    <main class="admin-content">
-      <h2 class="admin-title">Dashboard</h2>
+        <main class="admin-content">
+            <h2 style="color:var(--vinho); margin-top:0;">Dashboard</h2>
 
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-number" th:text="${artworksOk}">0</div>
-          <div class="stat-label">Artes vis&iacute;veis</div>
-        </div>
-        <div class="stat-card stat-removed">
-          <div class="stat-number" th:text="${artworksRemoved}">0</div>
-          <div class="stat-label">Artes ocultadas</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" th:text="${commentsOk}">0</div>
-          <div class="stat-label">Coment&aacute;rios vis&iacute;veis</div>
-        </div>
-        <div class="stat-card stat-removed">
-          <div class="stat-number" th:text="${commentsRemoved}">0</div>
-          <div class="stat-label">Coment&aacute;rios ocultados</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" th:text="${totalUsers}">0</div>
-          <div class="stat-label">Usu&aacute;rios cadastrados</div>
-        </div>
-      </div>
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
-      <div class="admin-quick-links">
-        <a
-          class="admin-quick-link admin-quick-link-gold"
-          th:href="@{/admin/artworks(filter='removed')}"
-          th:if="${artworksRemoved > 0}"
-        >
-          Ver artes ocultadas
-        </a>
-        <a
-          class="admin-quick-link admin-quick-link-vinho"
-          th:href="@{/admin/comments(filter='removed')}"
-          th:if="${commentsRemoved > 0}"
-        >
-          Ver coment&aacute;rios ocultados
-        </a>
-      </div>
-    </main>
-  </div>
-  <div th:replace="~{fragments/footer :: footer}"></div>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-number" th:text="${artworksOk}">0</div>
+                    <div class="stat-label">Artes visíveis</div>
+                </div>
+                <div class="stat-card stat-removed">
+                    <div class="stat-number" th:text="${artworksRemoved}">0</div>
+                    <div class="stat-label">Artes ocultadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" th:text="${commentsOk}">0</div>
+                    <div class="stat-label">Comentários visíveis</div>
+                </div>
+                <div class="stat-card stat-removed">
+                    <div class="stat-number" th:text="${commentsRemoved}">0</div>
+                    <div class="stat-label">Comentários ocultados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" th:text="${totalUsers}">0</div>
+                    <div class="stat-label">Usuários cadastrados</div>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <a th:href="@{/admin/themes}"
+                   style="padding:10px 20px; background:var(--vinho); color:var(--bege);
+                          border-radius:8px; text-decoration:none; font-weight:600;">
+                    🎨 Gerenciar temas →
+                </a>
+                <a th:href="@{/admin/artworks(filter='removed')}"
+                   th:if="${artworksRemoved > 0}"
+                   style="padding:10px 20px; background:var(--dourado); color:#000;
+                          border-radius:8px; text-decoration:none; font-weight:600;">
+                    Ver artes ocultadas →
+                </a>
+                <a th:href="@{/admin/comments(filter='removed')}"
+                   th:if="${commentsRemoved > 0}"
+                   style="padding:10px 20px; background:#f8d7da; color:#721c24;
+                          border-radius:8px; text-decoration:none; font-weight:600;">
+                    Ver comentários ocultados →
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
-

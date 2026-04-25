@@ -12,12 +12,13 @@
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <p class="sidebar-title">Painel</p>
-      <a th:href="@{/admin}">Dashboard</a>
-      <p class="sidebar-title">Conte&uacute;do</p>
-      <a class="active" th:href="@{/admin/artworks}">Artes</a>
-      <a th:href="@{/admin/comments}">Coment&aacute;rios</a>
-      <p class="sidebar-title">Usu&aacute;rios</p>
-      <a th:href="@{/admin/users}">Usu&aacute;rios</a>
+      <a th:href="@{/admin}" class="active">Dashboard</a>
+      <p class="sidebar-title">Conteúdo</p>
+      <a th:href="@{/admin/artworks}">Artes</a>
+      <a th:href="@{/admin/comments}">Comentários</a>
+      <a th:href="@{/admin/themes}">Temas</a>
+      <p class="sidebar-title">Usuários</p>
+      <a th:href="@{/admin/users}">Usuários</a>
     </aside>
     <main class="admin-content">
       <h2 class="admin-title">Artes</h2>
