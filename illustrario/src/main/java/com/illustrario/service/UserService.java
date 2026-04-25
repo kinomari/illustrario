@@ -19,7 +19,10 @@ public class UserService {
         user.setEmail(user.getEmail().trim().toLowerCase());
         user.setNickname(user.getNickname().trim());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("ROLE_USER");
+
+        boolean isFirst = repo.count() == 0;
+        user.setRole(isFirst ? "ROLE_CURATOR" : "ROLE_USER");
+
         return repo.save(user);
     }
 
