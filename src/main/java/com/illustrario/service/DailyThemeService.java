@@ -53,10 +53,8 @@ public class DailyThemeService {
         List<ThemeWord> candidates = themeWordRepository.findLeastUsed();
 
         if (candidates.isEmpty()) {
-            throw new IllegalStateException(
-                "Nenhuma palavra no pool de temas! Adicione palavras na tabela theme_words."
-            );
-        }
+    return new ThemeWord("carregando...", "Primeiro tema em breve!");
+}
 
         return candidates.get(random.nextInt(candidates.size()));
     }
