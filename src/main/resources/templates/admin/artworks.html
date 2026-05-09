@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -13,12 +13,12 @@
     <aside class="admin-sidebar">
       <p class="sidebar-title">Painel</p>
       <a th:href="@{/admin}" class="active">Dashboard</a>
-      <p class="sidebar-title">Conte√∫do</p>
+      <p class="sidebar-title">Conte˙do</p>
       <a th:href="@{/admin/artworks}">Artes</a>
-      <a th:href="@{/admin/comments}">Coment√°rios</a>
+      <a th:href="@{/admin/comments}">Coment·rios</a>
       <a th:href="@{/admin/themes}">Temas</a>
-      <p class="sidebar-title">Usu√°rios</p>
-      <a th:href="@{/admin/users}">Usu√°rios</a>
+      <p class="sidebar-title">Usu·rios</p>
+      <a th:href="@{/admin/users}">Usu·rios</a>
     </aside>
     <main class="admin-content">
       <h2 class="admin-title">Artes</h2>
@@ -61,7 +61,7 @@
         <tbody>
           <tr th:each="a : ${artworks}" th:classappend="${a.removed} ? 'removed' : ''">
             <td>
-              <img class="admin-thumb" th:src="${a.filePath}" th:alt="${a.title}" />
+              <img class="admin-thumb" th:src="${a.thumbPath}" th:alt="${a.title}" />
             </td>
             <td>
               <a class="admin-link-primary" th:href="@{'/gallery/artwork/' + ${a.id}}" th:text="${a.title}"></a>

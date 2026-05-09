@@ -46,7 +46,7 @@
           th:each="a : ${recentArtworks}"
           th:href="@{'/gallery/artwork/' + ${a.id}}"
         >
-          <img class="home-masonry-image" th:src="${a.filePath}" th:alt="${a.title}" loading="lazy" />
+          <img class="home-masonry-image" th:src="${a.thumbPath}" th:alt="${a.title}" loading="lazy" />
 
           <div class="masonry-overlay">
             <p class="mo-title" th:text="${a.title}"></p>

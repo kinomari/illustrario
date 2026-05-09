@@ -32,7 +32,7 @@
       <article class="artwork-card" th:each="artwork : ${artworks}">
         <a class="card-link-block" th:href="@{'/gallery/artwork/' + ${artwork.id}}">
           <div class="artwork-image-wrapper">
-            <img class="artwork-image" th:src="${artwork.filePath}" th:alt="${artwork.title}" loading="lazy" />
+            <img class="artwork-image" th:src="${artwork.thumbPath}" th:alt="${artwork.title}" loading="lazy" />
           </div>
           <div class="artwork-info">
             <h3 th:text="${artwork.title}">T&iacute;tulo</h3>
