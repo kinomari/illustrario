@@ -4,7 +4,11 @@ import com.illustrario.dto.ArtworkUploadDto;
 import com.illustrario.model.Artwork;
 import com.illustrario.model.User;
 import com.illustrario.repository.ArtworkRepository;
+import com.illustrario.repository.CommentRepository;
+import com.illustrario.repository.LikeRepository;
 import com.illustrario.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,22 +21,29 @@ import java.util.Optional;
 
 @Service
 public class ArtworkService {
+    private static final Logger log = LoggerFactory.getLogger(ArtworkService.class);
 
     private final ArtworkRepository artworkRepository;
-    private final ImageStorageService imageStorageService;
+    private final SupabaseStorageService supabaseStorageService;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 
     public ArtworkService(ArtworkRepository artworkRepository,
-                          ImageStorageService imageStorageService,
-                          UserRepository userRepository) {
+                          SupabaseStorageService supabaseStorageService,
+                          UserRepository userRepository,
+                          CommentRepository commentRepository,
+                          LikeRepository likeRepository) {
         this.artworkRepository = artworkRepository;
-        this.imageStorageService = imageStorageService;
+        this.supabaseStorageService = supabaseStorageService;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.likeRepository = likeRepository;
     }
 
     @Transactional
     public Artwork upload(ArtworkUploadDto dto, String currentTheme, String userEmail) throws IOException {
-        String filePath = imageStorageService.save(dto.getImageFile());
+        String filePath = supabaseStorageService.save(dto.getImageFile());
         User user = userRepository.findByEmail(userEmail)
             .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
         Artwork artwork = new Artwork(dto.getTitle(), user.getNickname(),
@@ -78,8 +89,15 @@ public class ArtworkService {
     @Transactional
     public void hardDelete(Long id) {
         artworkRepository.findById(id).ifPresent(a -> {
-            imageStorageService.delete(a.getFilePath());
+            String filePath = a.getFilePath();
+            likeRepository.deleteByArtwork(a);
+            commentRepository.deleteByArtwork(a);
             artworkRepository.delete(a);
+            try {
+                supabaseStorageService.deleteByPublicUrl(filePath);
+            } catch (Exception e) {
+                log.warn("Obra removida do banco, mas houve falha ao apagar arquivo no Supabase. artworkId={}", id, e);
+            }
         });
     }
 }
