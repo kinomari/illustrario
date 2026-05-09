@@ -14,8 +14,8 @@ Todos os dias, uma palavra-tema é selecionada automaticamente e a comunidade po
 - 🖼️ **Upload de artes** com título, artista e descrição
 - 🔎 **Busca** por título e descrição
 - 👤 **Cadastro e login** com Spring Security
-- ❤️ **Curtidas por IP** (sem necessidade de login)
-- 💬 **Comentários** por obra
+- ❤️ **Curtidas** 
+- 💬 **Comentários**
 - 🛡️ **Moderação** para curadoria de obras e comentários
 - 🧭 **Explorar** artes e perfis públicos
 
@@ -108,7 +108,6 @@ No arquivo `src/main/resources/application.properties`, já existe um bloco come
 | Método | Rota | Descrição |
 |---|---|---|
 | GET | `/` | Home com tema diário e artes recentes |
-| GET | `/gallery` | Galeria principal |
 | POST | `/gallery/upload` | Envio de nova arte |
 | GET | `/search?q=...` | Busca de artes |
 | GET | `/register` | Cadastro |
@@ -148,4 +147,5 @@ A atualização roda diariamente à meia-noite no fuso `America/Sao_Paulo` e há
 
 ## 📄 Licença
 
-MIT License © 2025 kinomari
+MIT License © 2026 kinomari
+
