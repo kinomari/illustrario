@@ -65,6 +65,21 @@ public class Artwork {
     public void setFileName(String fileName) { this.fileName = fileName; }
     public String getFilePath() { return filePath; }
     public void setFilePath(String filePath) { this.filePath = filePath; }
+    public String getThumbPath() {
+        if (filePath == null || filePath.isBlank()) {
+            return filePath;
+        }
+        int lastSlash = filePath.lastIndexOf('/');
+        if (lastSlash < 0) {
+            return "thumb_" + filePath;
+        }
+        String prefix = filePath.substring(0, lastSlash + 1);
+        String filename = filePath.substring(lastSlash + 1);
+        if (filename.startsWith("thumb_")) {
+            return filePath;
+        }
+        return prefix + "thumb_" + filename;
+    }
     public String getTheme() { return theme; }
     public void setTheme(String theme) { this.theme = theme; }
     public LocalDateTime getUploadedAt() { return uploadedAt; }
