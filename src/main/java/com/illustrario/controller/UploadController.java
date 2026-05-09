@@ -10,13 +10,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 @Controller
 @RequestMapping("/upload")
 public class UploadController {
+    private static final Logger log = LoggerFactory.getLogger(UploadController.class);
 
     private final ArtworkService artworkService;
     private final DailyThemeService dailyThemeService;
@@ -54,9 +59,17 @@ public class UploadController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao salvar a imagem.");
+            log.error("Falha no upload de arte", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Nao foi possivel enviar a imagem. Tente novamente.");
         }
 
+        return "redirect:/upload";
+    }
+
+    @ExceptionHandler({MaxUploadSizeExceededException.class, MultipartException.class})
+    public String handleMultipartError(Exception e, RedirectAttributes redirectAttributes) {
+        log.warn("Falha multipart no upload de arte: {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", "Arquivo invalido ou muito grande para upload.");
         return "redirect:/upload";
     }
 }

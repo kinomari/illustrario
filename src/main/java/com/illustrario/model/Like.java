@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "likes",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"artwork_id", "visitor_ip"}))
+       uniqueConstraints = @UniqueConstraint(columnNames = {"artwork_id", "user_id"}))
 public class Like {
 
     @Id
@@ -15,14 +15,15 @@ public class Like {
     @JoinColumn(name = "artwork_id", nullable = false)
     private Artwork artwork;
 
-    @Column(name = "visitor_ip", nullable = false, length = 45)
-    private String visitorIp;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     public Like() {}
 
-    public Like(Artwork artwork, String visitorIp) {
+    public Like(Artwork artwork, User user) {
         this.artwork = artwork;
-        this.visitorIp = visitorIp;
+        this.user = user;
     }
 
 
@@ -31,6 +32,6 @@ public class Like {
     public Artwork getArtwork() { return artwork; }
     public void setArtwork(Artwork artwork) { this.artwork = artwork; }
 
-    public String getVisitorIp() { return visitorIp; }
-    public void setVisitorIp(String visitorIp) { this.visitorIp = visitorIp; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }
