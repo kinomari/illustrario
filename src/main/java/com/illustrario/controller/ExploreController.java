@@ -27,21 +27,25 @@ public class ExploreController {
 
     @GetMapping("/explorar")
     public String explore(Model model) {
-    
-        List<DailyTheme> pastThemes = dailyThemeRepository
-            .findByDateBeforeOrderByDateDesc(LocalDate.now());
+
+        List<DailyTheme> pastThemes =
+            dailyThemeRepository.findTop10ByDateBeforeOrderByDateDesc(LocalDate.now());
 
         Map<DailyTheme, List<Artwork>> themeArtworks = new LinkedHashMap<>();
+
         for (DailyTheme theme : pastThemes) {
-            List<Artwork> artworks = artworkRepository
-                .findByThemeOrderByUploadedAtDesc(theme.getWord())
-                .stream()
-                .filter(a -> !a.isRemoved())
-                .toList();
+
+            List<Artwork> artworks =
+                artworkRepository
+                    .findTop12ByThemeAndRemovedFalseOrderByUploadedAtDesc(
+                        theme.getWord()
+                    );
+
             themeArtworks.put(theme, artworks);
         }
 
         model.addAttribute("themeArtworks", themeArtworks);
+
         return "explore";
     }
 }

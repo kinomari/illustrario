@@ -14,4 +14,6 @@ public interface DailyThemeRepository extends JpaRepository<DailyTheme, Long> {
     Optional<DailyTheme> findByDate(LocalDate date);
 
     List<DailyTheme> findByDateBeforeOrderByDateDesc(LocalDate date);
+
+    List<DailyTheme> findTop10ByDateBeforeOrderByDateDesc(LocalDate date);
 }

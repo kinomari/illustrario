@@ -108,7 +108,7 @@ No arquivo `src/main/resources/application.properties`, já existe um bloco come
 | Método | Rota | Descrição |
 |---|---|---|
 | GET | `/` | Home com tema diário e artes recentes |
-| POST | `/gallery/upload` | Envio de nova arte |
+| POST | `/upload` | Envio de nova arte |
 | GET | `/search?q=...` | Busca de artes |
 | GET | `/register` | Cadastro |
 | GET | `/login` | Login |
@@ -139,6 +139,7 @@ A atualização roda diariamente à meia-noite no fuso `America/Sao_Paulo` e há
 ## 🗺️ Roadmap (sugestões)
 
 - [ ] Melhorias de perfil de artista
+- [ ] Melhorias de interação social
 - [ ] Deploy e observabilidade em produção
 - [ ] Curadoria automática de artes e comentários que não sejam adequados
 - [ ] Assistente virtual da galeria
