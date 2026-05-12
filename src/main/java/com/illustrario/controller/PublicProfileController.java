@@ -27,9 +27,7 @@ public class PublicProfileController {
             .orElseThrow(() -> new IllegalArgumentException("Artista não encontrado: " + nickname));
 
         model.addAttribute("user", user);
-        model.addAttribute("artworks",
-            artworkService.getArtworksByUser(user)
-                .stream().filter(a -> !a.isRemoved()).toList());
+        model.addAttribute("artworks", artworkService.getPublicArtworksByUser(user));
 
         return "public_profile";
     }

@@ -22,6 +22,7 @@ import java.util.Optional;
 @Service
 public class ArtworkService {
     private static final Logger log = LoggerFactory.getLogger(ArtworkService.class);
+    private static final int PUBLIC_LIST_SIZE = 60;
 
     private final ArtworkRepository artworkRepository;
     private final SupabaseStorageService supabaseStorageService;
@@ -58,6 +59,25 @@ public class ArtworkService {
     }
     public List<Artwork> getArtworksByTheme(String theme) { return artworkRepository.findByThemeOrderByUploadedAtDesc(theme); }
     public List<Artwork> getArtworksByUser(User user) { return artworkRepository.findByUserOrderByUploadedAtDesc(user); }
+    public List<Artwork> getPublicArtworksByTheme(String theme) {
+        return artworkRepository
+            .findByThemeAndRemovedFalseOrderByUploadedAtDesc(theme, PageRequest.of(0, PUBLIC_LIST_SIZE))
+            .getContent();
+    }
+    public List<Artwork> getPublicArtworksByUser(User user) {
+        return artworkRepository
+            .findByUserAndRemovedFalseOrderByUploadedAtDesc(user, PageRequest.of(0, PUBLIC_LIST_SIZE))
+            .getContent();
+    }
+    public List<Artwork> searchPublicArtworks(String query) {
+        return artworkRepository
+            .findByRemovedFalseAndTitleContainingIgnoreCaseOrRemovedFalseAndDescriptionContainingIgnoreCase(
+                query,
+                query,
+                PageRequest.of(0, PUBLIC_LIST_SIZE)
+            )
+            .getContent();
+    }
     public Optional<Artwork> findById(Long id) { return artworkRepository.findById(id); }
     public List<Artwork> findAll() { return artworkRepository.findAllByOrderByUploadedAtDesc(); }
 

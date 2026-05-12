@@ -15,7 +15,15 @@ public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
     List<Artwork> findTop12ByOrderByUploadedAtDesc();
     long countByTheme(String theme);
     List<Artwork> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String title, String description);
+    Page<Artwork> findByRemovedFalseAndTitleContainingIgnoreCaseOrRemovedFalseAndDescriptionContainingIgnoreCase(
+        String title,
+        String description,
+        Pageable pageable
+    );
     List<Artwork> findByUserOrderByUploadedAtDesc(User user);
+    Page<Artwork> findByUserAndRemovedFalseOrderByUploadedAtDesc(User user, Pageable pageable);
     List<Artwork> findAllByOrderByUploadedAtDesc();
+    List<Artwork> findTop12ByThemeAndRemovedFalseOrderByUploadedAtDesc(String theme);
+    Page<Artwork> findByThemeAndRemovedFalseOrderByUploadedAtDesc(String theme, Pageable pageable);
     Page<Artwork> findByRemovedFalseOrderByUploadedAtDesc(Pageable pageable);
 }
