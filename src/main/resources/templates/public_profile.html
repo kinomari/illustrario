@@ -25,7 +25,7 @@
     </div>
 
     <div class="empty-state" th:if="${#lists.isEmpty(artworks)}">
-      Este artista ainda n&atilde;o enviou nenhuma obra.
+      Este artista ainda não enviou nenhuma obra.
     </div>
 
     <div class="artwork-grid" th:unless="${#lists.isEmpty(artworks)}">
@@ -35,7 +35,7 @@
             <img class="artwork-image" th:src="${artwork.thumbPath}" th:alt="${artwork.title}" loading="lazy" />
           </div>
           <div class="artwork-info">
-            <h3 th:text="${artwork.title}">T&iacute;tulo</h3>
+            <h3 th:text="${artwork.title}">Título</h3>
             <p class="artwork-meta">
               Tema: <span th:text="${artwork.theme}"></span> &middot;
               <time th:text="${#temporals.format(artwork.uploadedAt, 'dd/MM/yyyy')}"></time>

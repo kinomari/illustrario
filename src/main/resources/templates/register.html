@@ -21,7 +21,7 @@
           class="form-input"
           type="text"
           th:field="*{nickname}"
-          placeholder="Como voc&ecirc; quer ser conhecido(a)?"
+          placeholder="Como você quer ser conhecido(a)?"
         />
         <span class="field-error" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></span>
       </div>
@@ -33,13 +33,13 @@
       </div>
 
       <div class="form-group">
-        <label class="auth-label-inline">Senha <small>(m&iacute;n. 6 caracteres)</small></label>
+        <label class="auth-label-inline">Senha <small>(mín. 6 caracteres)</small></label>
         <input class="form-input" type="password" th:field="*{password}" />
         <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
       </div>
 
       <button type="submit" class="btn-submit">Criar conta</button>
-      <p class="auth-footer">J&aacute; tem conta? <a th:href="@{/login}">Entrar</a></p>
+      <p class="auth-footer">Já tem conta? <a th:href="@{/login}">Entrar</a></p>
     </form>
   </main>
 

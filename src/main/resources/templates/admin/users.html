@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Usu&aacute;rios | Admin</title>
+  <title>Usuários | Admin</title>
   <link rel="stylesheet" th:href="@{/css/style.css}" />
   <link rel="stylesheet" th:href="@{/css/admin.css}" />
 </head>
@@ -21,7 +21,7 @@
       <a th:href="@{/admin/users}">Usuários</a>
    </aside>
     <main class="admin-content">
-      <h2 class="admin-title">Usu&aacute;rios</h2>
+      <h2 class="admin-title">Usuários</h2>
 
       <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
 
@@ -32,7 +32,7 @@
             <th>Apelido</th>
             <th>E-mail</th>
             <th>Role</th>
-            <th class="admin-col-actions">A&ccedil;&otilde;es</th>
+            <th class="admin-col-actions">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -58,7 +58,7 @@
             <td class="admin-email-muted" th:text="${u.email}"></td>
             <td>
               <span class="badge badge-curator" th:if="${u.role == 'ROLE_CURATOR'}">Curador</span>
-              <span class="badge badge-ok" th:unless="${u.role == 'ROLE_CURATOR'}">Usu&aacute;rio</span>
+              <span class="badge badge-ok" th:unless="${u.role == 'ROLE_CURATOR'}">Usuário</span>
             </td>
             <td class="admin-actions admin-col-actions">
               <form

@@ -13,12 +13,12 @@
     <aside class="admin-sidebar">
       <p class="sidebar-title">Painel</p>
       <a th:href="@{/admin}" class="active">Dashboard</a>
-      <p class="sidebar-title">Conte�do</p>
+      <p class="sidebar-title">Conteúdo</p>
       <a th:href="@{/admin/artworks}">Artes</a>
-      <a th:href="@{/admin/comments}">Coment�rios</a>
+      <a th:href="@{/admin/comments}">Comentários</a>
       <a th:href="@{/admin/themes}">Temas</a>
-      <p class="sidebar-title">Usu�rios</p>
-      <a th:href="@{/admin/users}">Usu�rios</a>
+      <p class="sidebar-title">Usuários</p>
+      <a th:href="@{/admin/users}">Usuários</a>
     </aside>
     <main class="admin-content">
       <h2 class="admin-title">Artes</h2>
@@ -36,7 +36,7 @@
           class="filter-btn"
           th:href="@{/admin/artworks(filter='active')}"
           th:classappend="${filter == 'active'} ? ' active' : ''"
-          >Vis&iacute;veis</a
+          >Visíveis</a
         >
         <a
           class="filter-btn"
@@ -50,12 +50,12 @@
         <thead>
           <tr>
             <th>Imagem</th>
-            <th>T&iacute;tulo</th>
+            <th>Título</th>
             <th>Artista</th>
             <th>Tema</th>
             <th>Data</th>
             <th>Status</th>
-            <th class="admin-col-actions">A&ccedil;&otilde;es</th>
+            <th class="admin-col-actions">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -70,7 +70,7 @@
             <td th:text="${a.theme}">-</td>
             <td th:text="${#temporals.format(a.uploadedAt, 'dd/MM/yy')}">-</td>
             <td>
-              <span class="badge badge-ok" th:if="${!a.removed}">Vis&iacute;vel</span>
+              <span class="badge badge-ok" th:if="${!a.removed}">Visível</span>
               <span class="badge badge-removed" th:if="${a.removed}">Oculta</span>
             </td>
             <td class="admin-actions-wrap admin-col-actions">

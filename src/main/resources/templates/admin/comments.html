@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coment&aacute;rios | Admin</title>
+  <title>Comentários | Admin</title>
   <link rel="stylesheet" th:href="@{/css/style.css}" />
   <link rel="stylesheet" th:href="@{/css/admin.css}" />
 </head>
@@ -21,7 +21,7 @@
       <a th:href="@{/admin/users}">Usuários</a>
    </aside>
     <main class="admin-content">
-      <h2 class="admin-title">Coment&aacute;rios</h2>
+      <h2 class="admin-title">Comentários</h2>
 
       <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
 
@@ -36,7 +36,7 @@
           class="filter-btn"
           th:href="@{/admin/comments(filter='active')}"
           th:classappend="${filter == 'active'} ? ' active' : ''"
-          >Vis&iacute;veis</a
+          >Visíveis</a
         >
         <a
           class="filter-btn"
@@ -50,11 +50,11 @@
         <thead>
           <tr>
             <th>Autor</th>
-            <th>Coment&aacute;rio</th>
+            <th>Comentário</th>
             <th>Arte</th>
             <th>Data</th>
             <th>Status</th>
-            <th>A&ccedil;&otilde;es</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -76,7 +76,7 @@
             </td>
             <td th:text="${#temporals.format(c.createdAt, 'dd/MM/yy HH:mm')}">-</td>
             <td>
-              <span class="badge badge-ok" th:if="${!c.removed}">Vis&iacute;vel</span>
+              <span class="badge badge-ok" th:if="${!c.removed}">Visível</span>
               <span class="badge badge-removed" th:if="${c.removed}">Oculto</span>
             </td>
             <td class="admin-actions">
