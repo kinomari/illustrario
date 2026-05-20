@@ -30,7 +30,7 @@
 
     <div class="artwork-grid" th:unless="${#lists.isEmpty(artworks)}">
       <article class="artwork-card" th:each="artwork : ${artworks}">
-        <a class="card-link-block" th:href="@{'/gallery/artwork/' + ${artwork.id}}">
+        <a class="card-link-block" th:href="@{'/artwork/' + ${artwork.id}}">
           <div class="artwork-image-wrapper">
             <img class="artwork-image" th:src="${artwork.thumbPath}" th:alt="${artwork.title}" loading="lazy" />
           </div>

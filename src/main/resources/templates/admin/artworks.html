@@ -64,7 +64,7 @@
               <img class="admin-thumb" th:src="${a.thumbPath}" th:alt="${a.title}" />
             </td>
             <td>
-              <a class="admin-link-primary" th:href="@{'/gallery/artwork/' + ${a.id}}" th:text="${a.title}"></a>
+              <a class="admin-link-primary" th:href="@{'/artwork/' + ${a.id}}" th:text="${a.title}"></a>
             </td>
             <td th:text="${a.artistName}">-</td>
             <td th:text="${a.theme}">-</td>

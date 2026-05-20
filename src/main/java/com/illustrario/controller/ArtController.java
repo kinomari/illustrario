@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/gallery/artwork")
+@RequestMapping({"/artwork", "/gallery/artwork"})
 public class ArtController {
 
     private final ArtworkService artworkService;

@@ -37,6 +37,6 @@ public class CommentController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Erro: " + e.getMessage());
         }
-        return "redirect:/gallery/artwork/" + artworkId;
+        return "redirect:/artwork/" + artworkId;
     }
 }

@@ -27,7 +27,7 @@
         th:each="artwork : ${artworks}"
         th:unless="${artwork.removed}"
       >
-        <a class="card-link-block" th:href="@{'/gallery/artwork/' + ${artwork.id}}">
+        <a class="card-link-block" th:href="@{'/artwork/' + ${artwork.id}}">
           <div class="artwork-image-wrapper">
             <img
               class="artwork-image"

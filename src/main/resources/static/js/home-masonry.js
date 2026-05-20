@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const createCard = (artwork) => {
     const link = document.createElement("a");
     link.className = "masonry-card masonry-item";
-    link.href = "/gallery/artwork/" + artwork.id;
+    link.href = "/artwork/" + artwork.id;
 
     const img = document.createElement("img");
     img.className = "home-masonry-image";
