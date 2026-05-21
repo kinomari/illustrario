@@ -25,7 +25,7 @@ public class DeleteController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/artwork/{id}/delete")
+    @PostMapping("/gallery/artwork/{id}/delete")
     public String deleteArtwork(@PathVariable Long id,
                                 @AuthenticationPrincipal UserDetails userDetails,
                                 RedirectAttributes ra) {
@@ -52,7 +52,7 @@ public class DeleteController {
             commentService.softDeleteByOwner(id, nickname);
             ra.addFlashAttribute("successMessage", "Comentário ocultado.");
 
-            if (artworkId != null) return "redirect:/artwork/" + artworkId;
+            if (artworkId != null) return "redirect:/gallery/artwork/" + artworkId;
         } catch (SecurityException e) {
             ra.addFlashAttribute("errorMessage", e.getMessage());
         }

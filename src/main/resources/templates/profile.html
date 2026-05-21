@@ -64,7 +64,7 @@
     <div class="artwork-grid" th:unless="${#lists.isEmpty(artworks)}">
       <div class="artwork-card-wrapper" th:each="artwork : ${artworks}">
         <article class="artwork-card">
-          <a class="card-link-block" th:href="@{'/artwork/' + ${artwork.id}}">
+          <a class="card-link-block" th:href="@{'/gallery/artwork/' + ${artwork.id}}">
             <div class="artwork-image-wrapper">
               <img
                 class="artwork-image"
@@ -84,7 +84,7 @@
         </article>
 
         <form
-          th:action="@{'/artwork/' + ${artwork.id} + '/delete'}"
+          th:action="@{'/gallery/artwork/' + ${artwork.id} + '/delete'}"
           method="post"
           onsubmit="return confirm('Remover esta obra permanentemente?')"
         >

@@ -77,10 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const appendCards = async (cards) => {
     for (const card of cards) {
-      // Add first so browser can compute card height from CSS/layout.
       placeCard(card);
       await waitForImage(card);
-      // If image changed card height and overflowed too much, re-balance this card.
       const col = card.parentElement;
       if (col && col.scrollHeight > maxColumnHeight() + 120 && col.children.length > 1) {
         col.removeChild(card);
@@ -92,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const createCard = (artwork) => {
     const link = document.createElement("a");
     link.className = "masonry-card masonry-item";
-    link.href = "/artwork/" + artwork.id;
+    link.href = "/gallery/artwork/" + artwork.id;
 
     const img = document.createElement("img");
     img.className = "home-masonry-image";
@@ -153,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nextPage = Number.isInteger(payload.nextPage) ? payload.nextPage : nextPage + 1;
       syncDataState();
     } catch (_error) {
-      // Keep silent: user can keep browsing loaded content.
+
     } finally {
       loading = false;
     }
@@ -179,7 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
     resetColumns();
     await appendCards(initialCards);
 
-    // If content still fits in viewport, prefetch more pages.
     let guard = 0;
     while (hasMore && wall.scrollWidth <= wall.clientWidth + 80 && guard < 3) {
       await loadMore();

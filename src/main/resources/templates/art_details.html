@@ -20,9 +20,21 @@
       <th:block th:if="${artwork.user != null}">
         <form
           class="art-delete-form"
-          th:action="@{'/artwork/' + ${artwork.id} + '/delete'}"
+          th:action="@{'/gallery/artwork/' + ${artwork.id} + '/delete'}"
           method="post"
-          th:if="${artwork.user.email == #authentication.name or #authorization.expression('hasRole(''CURATOR'')')}"
+          sec:authorize="isAuthenticated()"
+          th:if="${artwork.user.email == #authentication.name}"
+          onsubmit="return confirm('Remover esta obra permanentemente?')"
+        >
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <button type="submit" class="btn-delete btn-delete-overlay">🗑</button>
+        </form>
+
+        <form
+          class="art-delete-form"
+          th:action="@{'/gallery/artwork/' + ${artwork.id} + '/delete'}"
+          method="post"
+          sec:authorize="hasRole('CURATOR')"
           onsubmit="return confirm('Remover esta obra permanentemente?')"
         >
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -106,9 +118,8 @@
 
       <th:block sec:authorize="isAuthenticated()">
         <th:block
-          th:with="author=${commentAuthors[comment.authorName]},
-                                   isAuthor=${comment.authorName == currentNickname},
-                                   isOwner=${artwork.user != null and artwork.user.email == #authentication.name}"
+          th:with="isAuthor=${comment.authorName == currentNickname},
+                   isOwner=${artwork.user != null and artwork.user.email == #authentication.name}"
         >
           <form
             th:if="${isAuthor or isOwner}"

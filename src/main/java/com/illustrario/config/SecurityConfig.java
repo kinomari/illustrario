@@ -29,9 +29,8 @@ public class SecurityConfig {
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(passwordEncoder());
         provider.setUserDetailsService(customUserDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
@@ -47,7 +46,7 @@ public class SecurityConfig {
                                  "/uploads/**").permitAll()
                 .requestMatchers("/upload/**", "/comments/**",
                                  "/api/likes/**", "/profile/**").authenticated()
-                .requestMatchers("/artwork/*/delete", "/comment/*/delete").authenticated()
+                .requestMatchers("/gallery/artwork/*/delete", "/comment/*/delete").authenticated()
                 .requestMatchers("/admin/**").authenticated()
                 .anyRequest().permitAll()
             )

@@ -65,11 +65,11 @@
               <img class="admin-thumb" th:src="${a.thumbPath}" th:alt="${a.title}" />
             </td>
             <td>
-              <a class="admin-link-primary" th:href="@{'/artwork/' + ${a.id}}" th:text="${a.title}"></a>
+              <a class="admin-link-primary" th:href="@{'/gallery/artwork/' + ${a.id}}" th:text="${a.title}"></a>
             </td>
             <td th:text="${a.artistName}">-</td>
             <td th:text="${a.theme}">-</td>
-            <td th:text="${#temporals.format(a.uploadedAt, 'dd/MM/yy')}">-</td>
+            <td th:text="${a.uploadedAt != null ? #temporals.format(a.uploadedAt, 'dd/MM/yy') : '-'}">-</td>
             <td>
               <span class="badge badge-ok" th:if="${!a.removed}">Visível</span>
               <span class="badge badge-removed" th:if="${a.removed}">Oculta</span>

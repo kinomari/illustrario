@@ -47,7 +47,7 @@
         <a
           class="masonry-card masonry-item"
           th:each="a : ${recentArtworks}"
-          th:href="@{'/artwork/' + ${a.id}}"
+          th:href="@{'/gallery/artwork/' + ${a.id}}"
         >
           <img class="home-masonry-image" th:src="${a.thumbPath}" th:alt="${a.title}" loading="lazy" />
 

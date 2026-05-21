@@ -71,7 +71,7 @@
             <td>
               <a
                 class="admin-link-secondary"
-                th:href="@{'/artwork/' + ${c.artwork.id}}"
+                th:href="@{'/gallery/artwork/' + ${c.artwork.id}}"
                 th:text="${c.artwork.title}"
               ></a>
             </td>
@@ -98,4 +98,3 @@
   <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
-

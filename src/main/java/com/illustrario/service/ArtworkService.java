@@ -78,6 +78,15 @@ public class ArtworkService {
             )
             .getContent();
     }
+
+    public List<Artwork> findAllWithUser() {
+        return artworkRepository.findAllWithUserOrderByUploadedAtDesc();
+    }
+
+    public Optional<Artwork> findByIdWithUser(Long id) {
+        return artworkRepository.findByIdWithUser(id);
+    }
+
     public Optional<Artwork> findById(Long id) { return artworkRepository.findById(id); }
     public List<Artwork> findAll() { return artworkRepository.findAllByOrderByUploadedAtDesc(); }
 

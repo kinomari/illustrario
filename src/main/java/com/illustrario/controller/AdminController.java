@@ -28,7 +28,7 @@ public class AdminController {
 
     @GetMapping
     public String dashboard(Model model) {
-        var allArtworks  = artworkService.findAll();
+        var allArtworks  = artworkService.findAllWithUser();
         var allComments  = commentService.findAll();
         var allUsers     = userRepository.findAll();
 
@@ -48,7 +48,7 @@ public class AdminController {
 
     @GetMapping("/artworks")
     public String artworks(@RequestParam(defaultValue = "all") String filter, Model model) {
-        var all = artworkService.findAll();
+        var all = artworkService.findAllWithUser();
         var list = switch (filter) {
             case "removed" -> all.stream().filter(a ->  a.isRemoved()).toList();
             case "active"  -> all.stream().filter(a -> !a.isRemoved()).toList();
@@ -80,7 +80,6 @@ public class AdminController {
 
     @PostMapping("/artwork/{id}/remove")
     public String removeArtwork(@PathVariable Long id, RedirectAttributes ra) {
-        artworkService.findById(id).ifPresent(a -> { a.setRemoved(true); });
         artworkService.softDeleteByOwnerAdmin(id);
         ra.addFlashAttribute("successMessage", "Arte ocultada.");
         return "redirect:/admin/artworks";
@@ -103,14 +102,14 @@ public class AdminController {
     @PostMapping("/comment/{id}/remove")
     public String removeComment(@PathVariable Long id, RedirectAttributes ra) {
         commentService.adminRemove(id);
-        ra.addFlashAttribute("successMessage", "Coment\u00e1rio ocultado.");
+        ra.addFlashAttribute("successMessage", "Comentário ocultado.");
         return "redirect:/admin/comments";
     }
 
     @PostMapping("/comment/{id}/restore")
     public String restoreComment(@PathVariable Long id, RedirectAttributes ra) {
         commentService.restore(id);
-        ra.addFlashAttribute("successMessage", "Coment\u00e1rio restaurado.");
+        ra.addFlashAttribute("successMessage", "Comentário restaurado.");
         return "redirect:/admin/comments";
     }
 
@@ -120,7 +119,7 @@ public class AdminController {
             u.setRole("ROLE_CURATOR");
             userRepository.save(u);
         });
-        ra.addFlashAttribute("successMessage", "Usu\u00e1rio promovido a curador.");
+        ra.addFlashAttribute("successMessage", "Usuário promovido a curador.");
         return "redirect:/admin/users";
     }
 
@@ -130,7 +129,7 @@ public class AdminController {
             u.setRole("ROLE_USER");
             userRepository.save(u);
         });
-        ra.addFlashAttribute("successMessage", "Usu\u00e1rio rebaixado.");
+        ra.addFlashAttribute("successMessage", "Usuário rebaixado.");
         return "redirect:/admin/users";
     }
 }
