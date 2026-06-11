@@ -61,7 +61,7 @@ public class AdminController {
 
     @GetMapping("/comments")
     public String comments(@RequestParam(defaultValue = "all") String filter, Model model) {
-        var all = commentService.findAll();
+        var all = commentService.findAllWithArtwork();
         var list = switch (filter) {
             case "removed" -> all.stream().filter(c ->  c.isRemoved()).toList();
             case "active"  -> all.stream().filter(c -> !c.isRemoved()).toList();

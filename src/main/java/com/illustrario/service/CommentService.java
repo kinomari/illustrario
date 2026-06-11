@@ -41,6 +41,7 @@ public class CommentService {
 
     public Optional<Comment> findById(Long id) { return commentRepository.findById(id); }
     public List<Comment> findAll() { return commentRepository.findAllByOrderByCreatedAtDesc(); }
+    public List<Comment> findAllWithArtwork() { return commentRepository.findAllWithArtworkOrderByCreatedAtDesc(); }
 
     @Transactional
     public void softDeleteByOwner(Long commentId, String userNickname) {
