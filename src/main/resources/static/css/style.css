@@ -653,6 +653,38 @@ a {
   color: #999;
 }
 
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 2rem 0 0;
+}
+
+.pagination-link {
+  min-width: 2.4rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(125, 25, 53, 0.2);
+  border-radius: 999px;
+  color: var(--vinho);
+  text-align: center;
+  text-decoration: none;
+  background: #fff;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pagination-link:hover,
+.pagination-link.active {
+  border-color: var(--vinho);
+  background: var(--vinho);
+  color: #fff;
+}
+
+.pagination-link.disabled {
+  pointer-events: none;
+  opacity: 0.45;
+}
+
 /* ===================== */
 /* ART DETAILS           */
 /* ===================== */

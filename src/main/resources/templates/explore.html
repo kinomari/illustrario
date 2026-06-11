@@ -53,6 +53,32 @@
       </section>
       <hr class="divider-subtle" />
     </div>
+
+    <nav
+      class="pagination"
+      th:if="${themePage != null and themePage.totalPages > 1}"
+      aria-label="Paginacao de temas anteriores"
+    >
+      <a
+        class="pagination-link"
+        th:classappend="${themePage.hasPrevious()} ? '' : ' disabled'"
+        th:href="@{/explorar(page=${previousPage})}"
+      >Anterior</a>
+
+      <a
+        class="pagination-link"
+        th:each="pageNumber : ${#numbers.sequence(0, themePage.totalPages - 1)}"
+        th:classappend="${pageNumber == currentPage} ? ' active' : ''"
+        th:href="@{/explorar(page=${pageNumber})}"
+        th:text="${pageNumber + 1}"
+      >1</a>
+
+      <a
+        class="pagination-link"
+        th:classappend="${themePage.hasNext()} ? '' : ' disabled'"
+        th:href="@{/explorar(page=${nextPage})}"
+      >Proxima</a>
+    </nav>
   </main>
 
   <div th:replace="~{fragments/footer :: footer}"></div>
